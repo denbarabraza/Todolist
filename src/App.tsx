@@ -46,7 +46,7 @@ function App() {
         let newTask={
             id: v1(),
             title: title,
-            isDone: false
+            isDone: true
         }
         setTask([newTask,...tasks])
     }
