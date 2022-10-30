@@ -1,5 +1,5 @@
 import {FilteredType} from "./App";
-import {ChangeEvent, KeyboardEvent, useState} from "react";
+import React, {ChangeEvent, KeyboardEvent, useState} from "react";
 import {Button} from "./components/Button";
 
 type TasksPropsType = {
@@ -13,27 +13,31 @@ type TodolistPropsType = {
     removeTask: (id: string) => void
     filteredTask: (v: FilteredType) => void
     addTasks: (title: string) => void
+    changeTaskStatus: (taskID: string, isDone: boolean) => void
 }
 
-export const Todolist = (props: TodolistPropsType) => {
+export const Todolist: React.FC<TodolistPropsType> = (props) => {
 
     //Добавление таски
     const [newTask, setNewTask] = useState('')
+    const [error, setError] = useState<string | null>(null)
 
     //Функции
     const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
         setNewTask(e.currentTarget.value)
+        setError('')
     }
     const onKeyDownHandler = (e: KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter' && newTask) {
-            props.addTasks(newTask)
-            setNewTask('')
+            onClickHandler()
         }
     }
     const onClickHandler = () => {
-        if (newTask) {
-            props.addTasks(newTask)
+        if (newTask.trim()) {
+            props.addTasks(newTask.trim())
             setNewTask('')
+        } else {
+            setError('Title is required')
         }
     }
     const remTaskHandler = (elID: string) => {
@@ -43,6 +47,7 @@ export const Todolist = (props: TodolistPropsType) => {
         props.filteredTask(v)
     }
 
+
     return (
         <div>
             <h3>{props.title}</h3>
@@ -51,22 +56,33 @@ export const Todolist = (props: TodolistPropsType) => {
                     value={newTask}
                     onChange={onChangeHandler}
                     onKeyDown={onKeyDownHandler}
+                    className={error ? 'error' : ''}
                 />
                 <Button
                     name={"Add"}
                     callBack={onClickHandler}
                 />
+                {error && <div className={'error-message'}>{error}</div>}
             </div>
 
             <ul>
                 {props.tasks.map((el) => {
+
+                    const onChangeStatus = (e: ChangeEvent<HTMLInputElement>) => {
+                        props.changeTaskStatus(el.id, e.currentTarget.checked)
+                    }
+
                     return (
-                        <li key={el.id}>
+                        <li key={el.id} className={el.isDone ? 'is-done' : ''}>
                             <Button
                                 name={'X'}
                                 callBack={() => remTaskHandler(el.id)}
                             />
-                            <input type={"checkbox"} checked={el.isDone}/>
+                            <input
+                                type={"checkbox"}
+                                checked={el.isDone}
+                                onChange={onChangeStatus}
+                            />
                             <span>{el.title}</span>
                         </li>
                     )
