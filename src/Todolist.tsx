@@ -14,6 +14,7 @@ type TodolistPropsType = {
     filteredTask: (v: FilteredType) => void
     addTasks: (title: string) => void
     changeTaskStatus: (taskID: string, isDone: boolean) => void
+    filter: FilteredType
 }
 
 export const Todolist: React.FC<TodolistPropsType> = (props) => {
@@ -46,7 +47,9 @@ export const Todolist: React.FC<TodolistPropsType> = (props) => {
     const filterTsarTasksHandler = (v: FilteredType) => {
         props.filteredTask(v)
     }
-
+    const onChangeStatus = (tID: string, isDone: boolean) => {
+        props.changeTaskStatus(tID, isDone)
+    }
 
     return (
         <div>
@@ -68,10 +71,6 @@ export const Todolist: React.FC<TodolistPropsType> = (props) => {
             <ul>
                 {props.tasks.map((el) => {
 
-                    const onChangeStatus = (e: ChangeEvent<HTMLInputElement>) => {
-                        props.changeTaskStatus(el.id, e.currentTarget.checked)
-                    }
-
                     return (
                         <li key={el.id} className={el.isDone ? 'is-done' : ''}>
                             <Button
@@ -81,7 +80,7 @@ export const Todolist: React.FC<TodolistPropsType> = (props) => {
                             <input
                                 type={"checkbox"}
                                 checked={el.isDone}
-                                onChange={onChangeStatus}
+                                onChange={(event) => onChangeStatus(el.id, event.currentTarget.checked)}
                             />
                             <span>{el.title}</span>
                         </li>
@@ -94,18 +93,21 @@ export const Todolist: React.FC<TodolistPropsType> = (props) => {
                 callBack={() => {
                     filterTsarTasksHandler('All')
                 }}
+                filter={props.filter}
             />
             <Button
                 name={'Active'}
                 callBack={() => {
                     filterTsarTasksHandler('Active')
                 }}
+                filter={props.filter}
             />
             <Button
                 name={'Completed'}
                 callBack={() => {
                     filterTsarTasksHandler('Completed')
                 }}
+                filter={props.filter}
             />
         </div>
     )

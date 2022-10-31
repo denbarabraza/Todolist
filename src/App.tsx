@@ -52,12 +52,8 @@ function App() {
     }
 
     //Изменение значения checked
-    const changeTaskStatus=(taskID:string, isDone: boolean)=>{
-        let task=tasks.find((e)=>e.id===taskID)
-        if(task){
-            task.isDone=isDone
-        }
-        setTask([...tasks])
+    const changeTaskStatus=(taskID: string, isDone: boolean)=>{
+        setTask(tasks.map(e=>e.id===taskID ? {...e, isDone: isDone}: e))
     }
 
     return (
@@ -69,6 +65,7 @@ function App() {
                 filteredTask={filteredTask}
                 addTasks={addTasks}
                 changeTaskStatus={changeTaskStatus}
+                filter={filter}
             />
         </div>
     );

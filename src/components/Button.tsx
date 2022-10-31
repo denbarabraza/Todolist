@@ -1,17 +1,23 @@
 import React from "react";
+import {FilteredType} from "../App";
 
-type ButtonPropsType={
+type ButtonPropsType = {
     name: string
-    callBack: ()=>void
+    callBack: () => void
+    filter?: FilteredType
 }
 
-export const Button: React.FC<ButtonPropsType>=(props)=>{
-    const onClickButtonHandler=()=>{
+export const Button: React.FC<ButtonPropsType> = (props) => {
+    const onClickButtonHandler = () => {
         return (
             props.callBack()
         )
     }
-    return(
-        <button onClick={onClickButtonHandler}>{props.name}</button>
+    return (
+        <button
+            onClick={onClickButtonHandler}
+            className={props.name === props.filter ? 'active-filter' : ''}>
+            {props.name}
+        </button>
     )
 }
