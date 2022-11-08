@@ -9,12 +9,14 @@ type TasksPropsType = {
 }
 type TodolistPropsType = {
     title: string
+    todolistsID:string
     tasks: Array<TasksPropsType>
-    removeTask: (id: string) => void
-    filteredTask: (v: FilteredType) => void
-    addTasks: (title: string) => void
-    changeTaskStatus: (taskID: string, isDone: boolean) => void
+    removeTask: (todolistsID:string, taskID: string) => void
+    filteredTask: (todolistsID:string, v: FilteredType) => void
+    addTasks: (todolistsID:string ,title: string) => void
+    changeTaskStatus: (todolistsID:string,taskID: string, isDone: boolean) => void
     filter: FilteredType
+    removeTodolist:(todolistsID:string)=>void
 }
 
 export const Todolist: React.FC<TodolistPropsType> = (props) => {
@@ -35,25 +37,32 @@ export const Todolist: React.FC<TodolistPropsType> = (props) => {
     }
     const onClickHandler = () => {
         if (newTask.trim()) {
-            props.addTasks(newTask.trim())
+            props.addTasks(props.todolistsID,newTask.trim())
             setNewTask('')
         } else {
             setError('Title is required')
         }
     }
     const remTaskHandler = (elID: string) => {
-        props.removeTask(elID)
+        props.removeTask(props.todolistsID,elID)
     }
     const filterTsarTasksHandler = (v: FilteredType) => {
-        props.filteredTask(v)
+        props.filteredTask(props.todolistsID, v)
     }
     const onChangeStatus = (tID: string, isDone: boolean) => {
-        props.changeTaskStatus(tID, isDone)
+        props.changeTaskStatus(props.todolistsID,tID, isDone)
+    }
+
+    const onClickRemoveTodolistHandler=()=>{
+        props.removeTodolist(props.todolistsID)
     }
 
     return (
         <div>
-            <h3>{props.title}</h3>
+            <h3>
+                {props.title}
+                <button onClick={onClickRemoveTodolistHandler}> X </button>
+            </h3>
             <div>
                 <input
                     value={newTask}
