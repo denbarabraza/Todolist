@@ -1,6 +1,7 @@
 import {FilteredType} from "./App";
-import React, {ChangeEvent, KeyboardEvent, useState} from "react";
+import React from "react";
 import {Button} from "./components/Button";
+import {AddTodoItem} from "./AddTodoItem";
 
 type TasksPropsType = {
     id: string
@@ -9,73 +10,42 @@ type TasksPropsType = {
 }
 type TodolistPropsType = {
     title: string
-    todolistsID:string
+    todolistsID: string
     tasks: Array<TasksPropsType>
-    removeTask: (todolistsID:string, taskID: string) => void
-    filteredTask: (todolistsID:string, v: FilteredType) => void
-    addTasks: (todolistsID:string ,title: string) => void
-    changeTaskStatus: (todolistsID:string,taskID: string, isDone: boolean) => void
+    removeTask: (todolistsID: string, taskID: string) => void
+    filteredTask: (todolistsID: string, v: FilteredType) => void
+    addTasks: (todolistsID: string, title: string) => void
+    changeTaskStatus: (todolistsID: string, taskID: string, isDone: boolean) => void
     filter: FilteredType
-    removeTodolist:(todolistsID:string)=>void
+    removeTodolist: (todolistsID: string) => void
 }
 
 export const Todolist: React.FC<TodolistPropsType> = (props) => {
 
-    //Добавление таски
-    const [newTask, setNewTask] = useState('')
-    const [error, setError] = useState<string | null>(null)
-
-    //Функции
-    const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        setNewTask(e.currentTarget.value)
-        setError('')
-    }
-    const onKeyDownHandler = (e: KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === 'Enter' && newTask) {
-            onClickHandler()
-        }
-    }
-    const onClickHandler = () => {
-        if (newTask.trim()) {
-            props.addTasks(props.todolistsID,newTask.trim())
-            setNewTask('')
-        } else {
-            setError('Title is required')
-        }
-    }
     const remTaskHandler = (elID: string) => {
-        props.removeTask(props.todolistsID,elID)
+        props.removeTask(props.todolistsID, elID)
     }
     const filterTsarTasksHandler = (v: FilteredType) => {
         props.filteredTask(props.todolistsID, v)
     }
     const onChangeStatus = (tID: string, isDone: boolean) => {
-        props.changeTaskStatus(props.todolistsID,tID, isDone)
+        props.changeTaskStatus(props.todolistsID, tID, isDone)
     }
-
-    const onClickRemoveTodolistHandler=()=>{
+    const onClickRemoveTodolistHandler = () => {
         props.removeTodolist(props.todolistsID)
+    }
+    const addTaskHandler = (title: string) => {
+        props.addTasks(props.todolistsID, title)
     }
 
     return (
         <div>
             <h3>
                 {props.title}
-                <button onClick={onClickRemoveTodolistHandler}> X </button>
+                <button onClick={onClickRemoveTodolistHandler}> X</button>
             </h3>
-            <div>
-                <input
-                    value={newTask}
-                    onChange={onChangeHandler}
-                    onKeyDown={onKeyDownHandler}
-                    className={error ? 'error' : ''}
-                />
-                <Button
-                    name={"Add"}
-                    callBack={onClickHandler}
-                />
-                {error && <div className={'error-message'}>{error}</div>}
-            </div>
+
+            <AddTodoItem addItem={addTaskHandler}/>
 
             <ul>
                 {props.tasks.map((el) => {
@@ -121,3 +91,4 @@ export const Todolist: React.FC<TodolistPropsType> = (props) => {
         </div>
     )
 }
+

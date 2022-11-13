@@ -2,8 +2,9 @@ import React, {useState} from 'react';
 import './App.css';
 import {v1} from "uuid";
 import {Todolist} from "./Todolist";
+import {AddTodoItem} from "./AddTodoItem";
 
-export type FilteredType='All'|'Active'|'Completed'
+export type FilteredType = 'All' | 'Active' | 'Completed'
 export type TodolistsType = {
     id: string
     title: string
@@ -12,8 +13,8 @@ export type TodolistsType = {
 
 function App() {
 
-    let todolistID1=v1();
-    let todolistID2=v1();
+    let todolistID1 = v1();
+    let todolistID2 = v1();
 
     let [todolists, setTodolists] = useState<Array<TodolistsType>>([
         {id: todolistID1, title: 'What to learn', filter: 'All'},
@@ -21,14 +22,14 @@ function App() {
     ])
 
     let [tasks, setTasks] = useState({
-        [todolistID1]:[
+        [todolistID1]: [
             {id: v1(), title: "HTML&CSS", isDone: true},
             {id: v1(), title: "JS", isDone: true},
             {id: v1(), title: "ReactJS", isDone: false},
             {id: v1(), title: "Rest API", isDone: false},
             {id: v1(), title: "GraphQL", isDone: false},
         ],
-        [todolistID2]:[
+        [todolistID2]: [
             {id: v1(), title: "HTML&CSS2", isDone: true},
             {id: v1(), title: "JS2", isDone: true},
             {id: v1(), title: "ReactJS2", isDone: false},
@@ -38,49 +39,66 @@ function App() {
     });
 
     //Удаление таски
-    const removeTask=(todolistsID:string, taskID:string)=>{
-        setTasks({...tasks, [todolistsID]:tasks[todolistsID].filter(el=>el.id!==taskID)})
+    const removeTask = (todolistsID: string, taskID: string) => {
+        setTasks({...tasks, [todolistsID]: tasks[todolistsID].filter(el => el.id !== taskID)})
     }
 
     //Фильтр таски
-    const filteredTask=(todolistsID:string, v:FilteredType)=>{
-        setTodolists(todolists.map((el)=>el.id===todolistsID ? {...el, filter:v}:el))
+    const filteredTask = (todolistsID: string, v: FilteredType) => {
+        setTodolists(todolists.map((el) => el.id === todolistsID ? {...el, filter: v} : el))
     }
 
     //Добавление таски
-    const addTasks=(todolistsID:string, title:string)=>{
-        let newTask={
+    const addTasks = (todolistsID: string, title: string) => {
+        let newTask = {
             id: v1(),
             title: title,
             isDone: true
         }
-        setTasks({...tasks, [todolistsID]:[newTask,...tasks[todolistsID]]})
+        setTasks({...tasks, [todolistsID]: [newTask, ...tasks[todolistsID]]})
     }
 
     //Изменение значения checked
-    const changeTaskStatus=(todolistsID:string,taskID: string, isDone: boolean)=>{
-    setTasks({...tasks, [todolistsID]: tasks[todolistsID].map(el=>el.id===taskID ? {...el, isDone:isDone}:el)})
+    const changeTaskStatus = (todolistsID: string, taskID: string, isDone: boolean) => {
+        setTasks({
+            ...tasks,
+            [todolistsID]: tasks[todolistsID].map(el => el.id === taskID ? {...el, isDone: isDone} : el)
+        })
     }
 
-    // Удаление Todolista
-    const removeTodolist=(todolistsID:string)=>{
-        setTodolists(todolists.filter(el=>el.id!==todolistsID))
+    // Удаление Todolist
+    const removeTodolist = (todolistsID: string) => {
+        setTodolists(todolists.filter(el => el.id !== todolistsID))
         delete tasks[todolistsID]
+    }
+    //Добавление Todolist
+    const addTodo=(title:string)=>{
+        let newTodo:TodolistsType={
+            id: v1(),
+            title: title,
+            filter: 'All'
+        }
+        setTodolists([newTodo,...todolists])
+        setTasks({
+            ...tasks,
+            [newTodo.id]:[]
+        })
     }
 
     return (
         <div className="App">
-            {todolists.map((e)=>{
+        <AddTodoItem addItem={addTodo}/>
+            {todolists.map((e) => {
 
                 let afterFilter = tasks[e.id]
-                if(e.filter==='Active'){
-                    afterFilter=tasks[e.id].filter((el)=>!el.isDone)
+                if (e.filter === 'Active') {
+                    afterFilter = tasks[e.id].filter((el) => !el.isDone)
                 }
-                if(e.filter==='Completed'){
-                    afterFilter=tasks[e.id].filter((el)=>el.isDone)
+                if (e.filter === 'Completed') {
+                    afterFilter = tasks[e.id].filter((el) => el.isDone)
                 }
 
-                return(
+                return (
                     <Todolist
                         key={e.id}
                         todolistsID={e.id}
