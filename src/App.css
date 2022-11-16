@@ -1,3 +1,4 @@
+
 .App {
   padding: 30px;
   display: flex;
@@ -7,18 +8,19 @@
   margin-right: 50px;
 }
 
-.error{
+.error {
   border: red 1px solid;
 }
 
-.error-message{
+.error-message {
   color: red;
 }
 
-.active-filter{
+.active-filter {
   background-color: aquamarine;
 }
 
-.is-done{
+.is-done {
   opacity: 0.5;
 }
+
