@@ -3,7 +3,6 @@ import './App.css';
 import {TaskType, Todolist} from './Todolist';
 import {v1} from 'uuid';
 import {InputItem} from "./components/InputItem";
-import EditableSpan from "./components/EditableSpan";
 
 export type FilterValuesType = "all" | "active" | "completed";
 type TodolistType = {

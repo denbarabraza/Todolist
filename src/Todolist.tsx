@@ -1,4 +1,4 @@
-import React, {ChangeEvent, useState, KeyboardEvent} from 'react';
+import React, {ChangeEvent} from 'react';
 import {FilterValuesType} from './App';
 import {InputItem} from "./components/InputItem";
 import EditableSpan from "./components/EditableSpan";
