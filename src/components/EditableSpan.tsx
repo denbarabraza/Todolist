@@ -12,7 +12,6 @@ const EditableSpan: React.FC<EditableSpanPropsType> = (props) => {
 
     const addUpdateTitle=()=>{
         props.callback(uptitle)
-
     }
 
     const onDoubleClickHandler = () => {

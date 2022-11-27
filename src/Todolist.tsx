@@ -26,9 +26,9 @@ type PropsType = {
 export function Todolist(props: PropsType) {
 
     const removeTodolist = () => props.removeTodolist(props.id)
-    const onAllClickHandler = () => props.changeFilter("all", props.id);
-    const onActiveClickHandler = () => props.changeFilter("active", props.id);
-    const onCompletedClickHandler = () => props.changeFilter("completed", props.id);
+    const onClickSuperFilterHandler=(filter:FilterValuesType)=>{
+        props.changeFilter(filter, props.id)
+    }
     const setInputValue=(title:string)=>{
         props.addTask(title,props.id)
     }
@@ -64,13 +64,13 @@ export function Todolist(props: PropsType) {
         </ul>
         <div>
             <button className={props.filter === 'all' ? "active-filter" : ""}
-                    onClick={onAllClickHandler}>All
+                    onClick={()=>onClickSuperFilterHandler('all')}>All
             </button>
             <button className={props.filter === 'active' ? "active-filter" : ""}
-                    onClick={onActiveClickHandler}>Active
+                    onClick={()=>onClickSuperFilterHandler('active')}>Active
             </button>
             <button className={props.filter === 'completed' ? "active-filter" : ""}
-                    onClick={onCompletedClickHandler}>Completed
+                    onClick={()=>onClickSuperFilterHandler('completed')}>Completed
             </button>
         </div>
     </div>
