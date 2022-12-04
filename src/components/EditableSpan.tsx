@@ -5,12 +5,12 @@ export type EditableSpanPropsType = {
     callback: (uptitle: string) => void
 }
 
-const EditableSpan: React.FC<EditableSpanPropsType> = (props) => {
+export const EditableSpan: React.FC<EditableSpanPropsType> = (props) => {
 
     const [edit, setEdit] = useState(false)
     const [uptitle, setUpTitle] = useState(props.title)
 
-    const addUpdateTitle=()=>{
+    const addUpdateTitle = () => {
         props.callback(uptitle)
     }
 
@@ -18,9 +18,10 @@ const EditableSpan: React.FC<EditableSpanPropsType> = (props) => {
         setEdit(!edit)
         edit && addUpdateTitle()
     }
-    const onChangeHandler=(e:ChangeEvent<HTMLInputElement>)=>{
+    const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
         setUpTitle(e.currentTarget.value)
     }
+
 
 
     return (
@@ -31,12 +32,6 @@ const EditableSpan: React.FC<EditableSpanPropsType> = (props) => {
                 onChange={onChangeHandler}
                 autoFocus
             />
-            : <span
-                onDoubleClick={onDoubleClickHandler}
-            >
-                {props.title}
-        </span>
+            : <span onDoubleClick={onDoubleClickHandler}>{props.title}</span>
     );
 };
-
-export default EditableSpan;

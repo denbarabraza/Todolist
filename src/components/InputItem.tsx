@@ -1,41 +1,51 @@
 import React, {ChangeEvent, KeyboardEvent, useState} from 'react';
+import s from "../Todolist.module.css";
+import {Button} from "./Button";
 
-export type InputItemPropsType={
-    callback: (title: string) => void
+type InputItemPropsType={
+   callback:(value:string)=>void
 }
-export const InputItem:React.FC<InputItemPropsType> = (props) => {
 
-    let [title, setTitle] = useState("")
-    let [error, setError] = useState<string | null>(null)
+export const InputItem:React.FC<InputItemPropsType> = (
+    {
+       callback
+    }) => {
 
-    const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        setTitle(e.currentTarget.value)
-    }
-    const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
-        setError(null);
-        if (e.charCode === 13) {
-            addTask();
+    const [value, setValue] = useState('')
+    const [error, setError] = useState<null | string>(null)
+
+    const onClickAddHandler = () => {
+        if (value.trim() !== '') {
+            callback(value.trim())
+            setValue('')
+        } else {
+            setError('Enter correct value')
+            setValue('')
         }
     }
-    const addTask = () => {
-        let newTitle = title.trim();
-        if (newTitle !== "") {
-            props.callback(newTitle);
-            setTitle("");
-        } else {
-            setError("Title is required");
+    const onChangeInputHandler = (e: ChangeEvent<HTMLInputElement>) => {
+        setError('')
+        setValue(e.currentTarget.value)
+    }
+    const onKeyUpHandler = (e: KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') {
+            onClickAddHandler()
         }
     }
 
     return (
-            <div>
-                <input value={title}
-                       onChange={onChangeHandler}
-                       onKeyPress={onKeyPressHandler}
-                       className={error ? "error" : ""}
-                />
-                <button onClick={addTask}>+</button>
-                {error && <div className="error-message">{error}</div>}
-            </div>
+        <div>
+            <input
+                value={value}
+                onChange={onChangeInputHandler}
+                onKeyUp={onKeyUpHandler}
+                className={error ? s.inputError : ''}
+            />
+            <Button
+                title={'+'}
+                callback={onClickAddHandler}
+            />
+            {error && <div className={s.textError}>{error}</div>}
+        </div>
     );
 };
