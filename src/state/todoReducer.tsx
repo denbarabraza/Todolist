@@ -1,4 +1,5 @@
 import {FilterType} from "../App";
+import {v1} from "uuid";
 
 export type TodoType = InTodoType[]
 type InTodoType = {
@@ -50,6 +51,7 @@ export const filteredTaskAC = (todoID: string, filter: FilterType) => {
         }
     } as const
 }
+
 export const removeTodoAC = (todoID: string) => {
     return {
         type: 'REMOVE_TODO',
@@ -59,12 +61,12 @@ export const removeTodoAC = (todoID: string) => {
     } as const
 }
 
-export const addTodoAC = (todoID: string, value:string) => {
+export const addTodoAC = (value:string) => {
     return {
         type: 'ADD_TODO',
         payload: {
-            todoID,
-            value
+            value,
+            todoID:v1()
         }
     } as const
 }

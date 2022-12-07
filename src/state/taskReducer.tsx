@@ -1,4 +1,5 @@
 import {v1} from "uuid";
+import {addTodoAC, removeTodoAC} from "./todoReducer";
 
 export type InTaskType = {
     id: string
@@ -28,7 +29,12 @@ export const taskReducer = (state: TaskType, action: ActionType) => {
             return {...state, [todoID]: [newTask, ...state[todoID]]}
         }
         case 'ADD_TODO': {
-            return {[todoID]: [], ...state}
+            return {[action.payload.todoID]: [], ...state}
+        }
+        case 'REMOVE_TODO': {
+            const stateCopy={...state}
+            delete stateCopy[action.payload.todoID]
+            return stateCopy
         }
         case 'UPDATE_TASK_TITLE': {
             return {...state,
@@ -50,8 +56,9 @@ type ActionType =
     ReturnType<typeof removeTaskAC>
     | ReturnType<typeof changeCheckedAC>
     | ReturnType<typeof addTaskAC>
-    | ReturnType<typeof addTodoInTaskAC>
+    | ReturnType<typeof addTodoAC>
     | ReturnType<typeof updateTitleTaskAC>
+    | ReturnType<typeof removeTodoAC>
 
 
 export const removeTaskAC = (todoID: string, taskID: string) => {
@@ -84,14 +91,14 @@ export const addTaskAC = (todoID: string, title: string) => {
         }
     } as const
 }
-export const addTodoInTaskAC = (todoID: string) => {
+/*export const addTodoInTaskAC = (todoID: string) => {
     return {
         type: 'ADD_TODO',
         payload: {
             todoID
         }
     } as const
-}
+}*/
 
 export const updateTitleTaskAC = (todoID: string, taskID: string, upTitle: string) => {
     return {

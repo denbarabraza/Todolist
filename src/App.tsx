@@ -4,7 +4,6 @@ import {v1} from "uuid";
 import {Todolist} from "./Todolist";
 import {
     addTaskAC,
-    addTodoInTaskAC,
     changeCheckedAC,
     removeTaskAC,
     taskReducer,
@@ -52,13 +51,12 @@ export const App = () => {
         dispatchTasks(addTaskAC(todoID, title))
     }
     const removeTodo = (todoID: string) => {
-        delete tasks[todoID]
         dispatchTodo(removeTodoAC(todoID))
     }
     const addTodoInputItem = (value: string) => {
-        let newIDTodo = v1()
-        dispatchTodo(addTodoAC(newIDTodo, value))
-        dispatchTasks(addTodoInTaskAC(newIDTodo))
+        const action = addTodoAC(value)
+        dispatchTodo(action)
+        dispatchTasks(action)
     }
      const updateTitleTask = (todoID: string, taskID: string, uptitle: string) => {
         dispatchTasks(updateTitleTaskAC(todoID, taskID, uptitle))
