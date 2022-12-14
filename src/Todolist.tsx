@@ -1,102 +1,105 @@
-import {InTaskType} from "./state/taskReducer";
 import React from "react";
-import {FilterType} from "./App";
-import s from './Todolist.module.css'
-import {Button} from "./components/Button";
-import {InputItem} from "./components/InputItem";
-import {EditableSpan} from "./components/EditableSpan";
+import {useDispatch, useSelector} from "react-redux";
+import {RootStateType} from "./state/store";
+import {addNewTaskAC, changeCheckedAC, removeTaskAC, TaskType, upTaskTitleAC} from "./state/taskReducer";
+import {SuperButton} from "./components/SuperButton";
+import {SuperInput} from "./components/SuperInput";
+import {SuperEditSpan} from "./components/SuperEditSpan";
+import {filteredTodoAC, removeTodoAC, upTodoTitleAC} from "./state/todoReducer";
 
-
+export type FilterType = 'All' | 'Active' | 'Completed'
 type TodolistPropsType = {
-    title: string
     todoID: string
-    task: InTaskType[]
-    removeTask: (todoID: string, taskID: string) => void
-    changeChecked: (todoID: string, taskID: string, isDone: boolean) => void
-    filteredTask: (todoID: string, filter: FilterType) => void
-    addTask: (todoID: string, title: string) => void
-    removeTodo: (todoID: string) => void
+    title: string
     filter: FilterType
-    updateTitleTask: (todoID: string, taskID: string, upTitle: string) => void
-    updateTodoTitle: (todoID: string, uptitle: string) => void
 }
+
 export const Todolist: React.FC<TodolistPropsType> = (
     {
         todoID,
-        task,
-        removeTask,
-        changeChecked,
-        filteredTask,
-        addTask,
-        removeTodo,
+        title,
         filter,
-        ...props
     }) => {
 
-    const onclickRemoveTaskHandler = (taskID: string,) => {
-        removeTask(todoID, taskID)
+    //Redux
+    const dispatch = useDispatch()
+    const tasks = useSelector<RootStateType, TaskType>(state => state.tasks)
+    //Function
+    const removeTask = (taskID: string) => {
+        dispatch(removeTaskAC(todoID, taskID))
+
     }
-    const onChangeChecked = (taskID: string, isDone: boolean) => {
-        changeChecked(todoID, taskID, isDone)
+    const onClickSuperFilter = (value: FilterType) => {
+        dispatch(filteredTodoAC(todoID,value))
     }
-    const onClickSuperFilter = (filter: FilterType) => {
-        filteredTask(todoID, filter)
+    const onChangeChecked = (taskID: string, check: boolean) => {
+        dispatch(changeCheckedAC(todoID, taskID, check))
     }
-    const onClickRemoveTodoHandler = () => {
-        removeTodo(todoID)
+    const onClickRemoveTodo = () => {
+        dispatch(removeTodoAC(todoID))
     }
-    const setInputItem = (title: string) => {
-        addTask(todoID, title)
+    const addNewTask=(value:string)=>{
+        dispatch(addNewTaskAC(todoID, value))
     }
-    const setUpTodoTitle = (upTodoTitle: string) => {
-        props.updateTodoTitle(todoID, upTodoTitle)
+    const setNewValueTodo=(upTitle: string)=>{
+        dispatch(upTodoTitleAC(todoID,upTitle))
     }
-    const setUpTaskTitle = (taskID: string, uptitle: string) => {
-        props.updateTitleTask(todoID, taskID, uptitle)
+    const setNewValueTask=(taskID:string,upTitle: string)=>{
+        dispatch(upTaskTitleAC(todoID,taskID,upTitle))
+    }
+
+    let filteredTask = tasks[todoID]
+    if (filter === 'Active') {
+        filteredTask = tasks[todoID].filter(e => !e.isDone)
+    }
+    if (filter === 'Completed') {
+        filteredTask = tasks[todoID].filter(e => e.isDone)
     }
 
     return (
         <div>
             <h3>
-                <EditableSpan title={props.title} callback={setUpTodoTitle}/>
-                <Button
-                    title={'X'}
-                    callback={onClickRemoveTodoHandler}
+                <SuperEditSpan
+                    title={title}
+                    callback={setNewValueTodo}
                 />
+                <SuperButton title={'X'} callback={onClickRemoveTodo}/>
             </h3>
-            <InputItem callback={(value) => setInputItem(value)}/>
-            <ul key={todoID}>
-                {task.map(t => {
+           <SuperInput
+               callback={addNewTask}
+           />
+            <ul>
+                {filteredTask.map(t => {
                     return (
                         <li key={t.id}>
                             <input
-                                type={'checkbox'}
+                                type={"checkbox"}
                                 checked={t.isDone}
                                 onChange={(e) => onChangeChecked(t.id, e.currentTarget.checked)}
                             />
-                            <EditableSpan title={t.title} callback={(uptitle) => setUpTaskTitle(t.id, uptitle)}/>
-                            <Button title={'X'} callback={() => onclickRemoveTaskHandler(t.id)}/>
+                            <SuperEditSpan
+                                title={t.title}
+                                callback={(upTitle)=>setNewValueTask(t.id,upTitle)}
+                            />
+                            <SuperButton title={'X'} callback={() => removeTask(t.id)}/>
                         </li>
                     )
                 })}
             </ul>
 
-            <Button
+            <SuperButton
                 title={'All'}
                 callback={() => onClickSuperFilter('All')}
-                className={s.active}
                 filter={filter}
             />
-            <Button
+            <SuperButton
                 title={'Active'}
                 callback={() => onClickSuperFilter('Active')}
-                className={s.active}
                 filter={filter}
             />
-            <Button
+            <SuperButton
                 title={'Completed'}
                 callback={() => onClickSuperFilter('Completed')}
-                className={s.active}
                 filter={filter}
             />
         </div>
