@@ -1,31 +1,30 @@
-import React from 'react';
-import {FilterType} from "../Todolist";
+import React, {memo} from 'react';
+import {FilterValueType} from "../state/taskReducer";
 import s from '../Todolist.module.css'
 
-type SuperButtonPropsType = {
-    title: string
+type ButtonPropsType = {
+    title: string,
     callback: () => void
-    filter?: FilterType
+    filter?: FilterValueType
 }
 
-export const SuperButton: React.FC<SuperButtonPropsType> = (
+export const Button: React.FC<ButtonPropsType> = memo((
     {
         title,
         callback,
         filter
     }) => {
-
     const onClickHandler = () => {
         callback()
     }
 
+    console.log('Button rendering')
     return (
         <button
-            onClick={onClickHandler}
             className={filter === title ? s.active : ''}
-        >
+            onClick={onClickHandler}>
             {title}
         </button>
     );
-};
+});
 
