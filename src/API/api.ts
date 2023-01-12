@@ -38,7 +38,7 @@ export const taskAPI = {
                 return res.data
             })
     },
-    updateTask(todoID: string, taskID: string, obj: ObjNewTask) {
+    updateTask(todoID: string, taskID: string, obj: UpdateTaskModelType) {
         return instance.put<ResponseType<{ item: TaskType }>>(`todo-lists/${todoID}/tasks/${taskID}`, obj)
             .then((res) => {
                 return res.data
@@ -79,7 +79,7 @@ type ResponseType<T = {}> = {
     resultCode: number
 }
 
-export type ObjNewTask = {
+export type UpdateTaskModelType = {
     title: string
     description: string
     status: number

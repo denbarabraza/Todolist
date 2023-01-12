@@ -1,5 +1,5 @@
-import React, {ChangeEvent, useEffect, useState} from 'react';
-import {ObjNewTask, taskAPI, todoAPI} from "../API/api";
+import React, {ChangeEvent, useState} from 'react';
+import {taskAPI, UpdateTaskModelType} from "../API/api";
 
 export default {
     title: 'API/TASK',
@@ -80,7 +80,7 @@ export const UpdateTask = () => {
     const [todoID, setTodoID] = useState<string>('')
     const [taskID, setTaskID] = useState<string>('')
 
-    let obj: ObjNewTask = {
+    let obj: UpdateTaskModelType = {
         title: title,
         description: 'blal',
         status: 1,

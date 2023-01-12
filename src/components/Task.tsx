@@ -1,5 +1,5 @@
 import React, {memo, useCallback} from "react";
-import {onChangeTaskStatusTC, onChangeTaskTitleTC, removeTasksTC} from "../state/taskReducer";
+import {removeTasksTC, updateTaskTC} from "../state/taskReducer";
 import {Button} from "./Button";
 import {SuperEditbleSpan} from "./SuperEditbleSpan";
 import {TaskStatuses, TaskType} from "../API/api";
@@ -21,10 +21,10 @@ export const Task: React.FC<TaskPropsType> = memo((
         dispatch(removeTasksTC(todoID, task.id))
     }, [todoID,task])
     const onChangeTaskStatus = useCallback((taskID: string, status: TaskStatuses) => {
-        dispatch(onChangeTaskStatusTC(todoID, taskID, status))
+        dispatch(updateTaskTC(todoID, taskID, {status:status}))
     }, [todoID,task])
     const setUpTasksTitle = useCallback((upValue: string) => {
-        dispatch(onChangeTaskTitleTC(todoID, task.id, upValue))
+        dispatch(updateTaskTC(todoID, task.id, {title:upValue}))
     }, [todoID,task])
 
     return (
