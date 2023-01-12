@@ -1,16 +1,14 @@
 import {v1} from "uuid";
+import {todoAPI, TodoType} from "../API/api";
+import {Dispatch} from "redux";
 
 export const todolistId1 = v1()
 export const todolistId2 = v1()
 
-export type TodoType = {
-    id: string
-    title: string
-}
 
 const initialState: TodoType[] = [
-    // {id: todolistId1, title: "What to learn"},
-    // {id: todolistId2, title: "What to buy"}
+    // {id: todolistId1, title: "What to learn",addedDate: '',order: 0},
+    // {id: todolistId2, title: "What to buy",addedDate: '',order: 0}
 ]
 
 //Reducer
@@ -20,25 +18,28 @@ export const todoReducer = (state = initialState, action: ActionsType): TodoType
             return state.filter(e => e.id !== action.payload.todoID);
         }
         case 'ADD_TODO': {
-            let newTodo = {id: action.payload.todoID, title: action.payload.value}
-            return [newTodo, ...state];
+            return [action.payload.newTodo, ...state];
         }
         case 'SET_UPDATE_TITLE_TODO': {
             return state.map(t => t.id === action.payload.todoID
-                    ? {...t, title: action.payload.upValue}
-                    : t
-                )
+                ? {...t, title: action.payload.upValue}
+                : t
+            )
+        }
+        case "SET_TODO_FROM_BACK": {
+            return [...action.payload.todos, ...state]
         }
         default:
             return state
     }
 }
-
-
+//Action Type
 type ActionsType = ReturnType<typeof removeTodoAC>
     | ReturnType<typeof addNewTodoAC>
     | ReturnType<typeof setUpTodoTitleAC>
+    | ReturnType<typeof setTodosAC>
 
+//Action Creator
 export const removeTodoAC = (todoID: string) => {
     return {
         type: 'REMOVE_TODO',
@@ -47,12 +48,11 @@ export const removeTodoAC = (todoID: string) => {
         }
     } as const
 }
-export const addNewTodoAC = (value: string) => {
+export const addNewTodoAC = (newTodo: TodoType) => {
     return {
         type: 'ADD_TODO',
         payload: {
-            value,
-            todoID: v1()
+            newTodo
         }
     } as const
 }
@@ -64,4 +64,46 @@ export const setUpTodoTitleAC = (todoID: string, upValue: string) => {
             todoID
         }
     } as const
+}
+export const setTodosAC = (todos: TodoType[]) => {
+    return {
+        type: 'SET_TODO_FROM_BACK',
+        payload: {
+            todos
+        }
+    } as const
+}
+
+//Thunk Creator
+export const setTodosTC = () => {
+    return (dispatch: Dispatch) => {
+        todoAPI.getTodo()
+            .then((res) => {
+                dispatch(setTodosAC(res))
+            })
+    }
+}
+export const createTodoTC = (title: string) => {
+    return (dispatch: Dispatch) => {
+        todoAPI.createTodo(title)
+            .then((res) => {
+                dispatch(addNewTodoAC(res.data.item))
+            })
+    }
+}
+export const deleteTodoTC = (todoID: string) => {
+    return (dispatch: Dispatch) => {
+        todoAPI.deleteTodo(todoID)
+            .then((res) => {
+                dispatch(removeTodoAC(todoID))
+            })
+    }
+}
+export const updateTodoTC = (todoID: string, title: string) => {
+    return (dispatch: Dispatch) => {
+        todoAPI.updateTodo(todoID, title)
+            .then((res) => {
+                dispatch(setUpTodoTitleAC(todoID,title))
+            })
+    }
 }

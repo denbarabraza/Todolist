@@ -1,11 +1,12 @@
 import React, {memo, useCallback} from "react";
-import {InDataTaskType, onChangeTaskStatusAC, removeTaskAC, setUpTasksTitleAC} from "../state/taskReducer";
+import {onChangeTaskStatusTC, onChangeTaskTitleTC, removeTasksTC} from "../state/taskReducer";
 import {Button} from "./Button";
 import {SuperEditbleSpan} from "./SuperEditbleSpan";
-import {useDispatch} from "react-redux";
+import {TaskStatuses, TaskType} from "../API/api";
+import {RootDispatch} from "../state/store";
 
 type TaskPropsType = {
-    task: InDataTaskType
+    task: TaskType
     todoID:string
 }
 export const Task: React.FC<TaskPropsType> = memo((
@@ -14,16 +15,16 @@ export const Task: React.FC<TaskPropsType> = memo((
         todoID
     }) => {
 
-    const dispatch=useDispatch()
+    const dispatch=RootDispatch()
 
     const onClickRemoveTask = useCallback(() => {
-        dispatch(removeTaskAC(todoID, task.id))
+        dispatch(removeTasksTC(todoID, task.id))
     }, [todoID,task])
-    const onChangeTaskStatus = useCallback((isDone: boolean, taskID: string) => {
-        dispatch(onChangeTaskStatusAC(todoID, task.id, isDone))
+    const onChangeTaskStatus = useCallback((taskID: string, status: TaskStatuses) => {
+        dispatch(onChangeTaskStatusTC(todoID, taskID, status))
     }, [todoID,task])
     const setUpTasksTitle = useCallback((upValue: string) => {
-        dispatch(setUpTasksTitleAC(todoID, task.id, upValue))
+        dispatch(onChangeTaskTitleTC(todoID, task.id, upValue))
     }, [todoID,task])
 
     return (
@@ -34,13 +35,13 @@ export const Task: React.FC<TaskPropsType> = memo((
             />
             <input
                 type={"checkbox"}
-                checked={task.isDone}
-                onChange={(e) => onChangeTaskStatus(e.currentTarget.checked, task.id)}
+                checked={task.status === TaskStatuses.Completed}
+                onChange={(e) => onChangeTaskStatus(task.id, e.currentTarget.checked ? TaskStatuses.Completed : TaskStatuses.New)}
             />
             <SuperEditbleSpan
                 title={task.title}
-                callback={(upValue) => setUpTasksTitle(upValue)}/>
-            <span>{}</span>
+                callback={(upValue) => setUpTasksTitle(upValue)}
+            />
         </li>
     )
 })

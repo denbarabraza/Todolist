@@ -1,20 +1,24 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import './App.css';
 import {Todolist} from "./Todolist";
 import {useDispatch, useSelector} from "react-redux";
-import {RootStoreType} from "./state/store";
-import {addNewTodoAC, TodoType} from "./state/todoReducer";
+import {RootDispatch, RootStoreType} from "./state/store";
+import {addNewTodoAC, createTodoTC, setTodosTC} from "./state/todoReducer";
 import {InputItemForm} from "./components/InputItemForm";
-
+import {TodoType} from "./API/api";
 
 function App() {
-
     console.log('App rendering')
     const todolist = useSelector<RootStoreType, TodoType[]>(state => state.todolist)
-    const dispatch = useDispatch()
+    const dispatch = RootDispatch()
+    console.log(todolist)
+
+    useEffect(()=>{
+        dispatch(setTodosTC())
+    },[])
 
     const addNewTodo = useCallback((value: string) => {
-        dispatch(addNewTodoAC(value))
+        dispatch(createTodoTC(value))
     }, [])
 
     return (

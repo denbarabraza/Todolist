@@ -1,12 +1,20 @@
-import {useDispatch, useSelector} from "react-redux";
-import {RootStoreType} from "./state/store";
-import {addTaskAC, changeFilterValueAC, FilterValueType, TaskType} from "./state/taskReducer";
-import React, {FC, memo, useCallback} from "react";
+import {useSelector} from "react-redux";
+import {RootDispatch, RootStoreType} from "./state/store";
+import {
+    addTaskAC,
+    changeFilterValueAC,
+    createTasksTC,
+    FilterValueType,
+    setTasksTC,
+    TaskCommonType
+} from "./state/taskReducer";
+import React, {FC, memo, useCallback, useEffect} from "react";
 import {Button} from "./components/Button";
-import {removeTodoAC, setUpTodoTitleAC} from "./state/todoReducer";
+import {deleteTodoTC, setTodosTC, updateTodoTC} from "./state/todoReducer";
 import {InputItemForm} from "./components/InputItemForm";
 import {SuperEditbleSpan} from "./components/SuperEditbleSpan";
 import {Task} from "./components/Task";
+import {TaskStatuses} from "./API/api";
 
 type TodolistPropsType = {
     todoID: string
@@ -21,30 +29,33 @@ export const Todolist: FC<TodolistPropsType> = memo((
 
     console.log('TODO rendering')
 
-    const task = useSelector<RootStoreType, TaskType>(state => state.task)
-    const dispatch = useDispatch()
+    const task = useSelector<RootStoreType, TaskCommonType>(state => state.task)
+    const dispatch = RootDispatch()
 
+    useEffect(()=>{
+        dispatch(setTasksTC(todoID))
+    },[])
 
     const onClickSuperButtonHandler = useCallback((filter: FilterValueType) => {
         dispatch(changeFilterValueAC(todoID, filter))
     },[todoID])
     const onClickRemoveTodo = useCallback(() => {
-        dispatch(removeTodoAC(todoID))
+        dispatch(deleteTodoTC(todoID))
     },[todoID])
     const addTaskHandler = useCallback((value: string) => {
-        dispatch(addTaskAC(todoID, value))
+        dispatch(createTasksTC(todoID, value))
     },[todoID])
 
     const setUpTodoTitle=useCallback((upValue:string)=>{
-        dispatch(setUpTodoTitleAC(todoID,upValue ))
+        dispatch(updateTodoTC(todoID,upValue ))
     },[])
 
     let filteredTask = task[todoID].data
     if (task[todoID].filter === 'Active') {
-        filteredTask = task[todoID].data.filter(e => !e.isDone)
+        filteredTask = task[todoID].data.filter(e => e.status === TaskStatuses.New)
     }
     if (task[todoID].filter === 'Completed') {
-        filteredTask = task[todoID].data.filter(e => e.isDone)
+        filteredTask = task[todoID].data.filter(e => e.status === TaskStatuses.Completed)
     }
 
     return (
