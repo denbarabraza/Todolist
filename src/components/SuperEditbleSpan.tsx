@@ -1,4 +1,5 @@
 import React, {ChangeEvent, FC, memo, useState} from 'react';
+import TextField from "@mui/material/TextField";
 
 
 type SuperEditbleSpanPropsType = {
@@ -30,11 +31,12 @@ export const SuperEditbleSpan: FC<SuperEditbleSpanPropsType> = memo((
 
     return (
         edit
-            ? <input
+            ? <TextField
                 value={upValue}
                 onChange={onChangeInputHandler}
                 onBlur={onDoubleClickHandler}
                 autoFocus
+                size={'small'}
             />
             : <span onDoubleClick={onDoubleClickHandler}>{title}</span>
     );

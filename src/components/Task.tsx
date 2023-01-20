@@ -4,6 +4,8 @@ import {Button} from "./Button";
 import {SuperEditbleSpan} from "./SuperEditbleSpan";
 import {TaskStatuses, TaskType} from "../API/api";
 import {RootDispatch} from "../state/store";
+import Delete from "@mui/icons-material/Delete";
+import IconButton from "@mui/material/IconButton";
 
 type TaskPropsType = {
     task: TaskType
@@ -28,11 +30,7 @@ export const Task: React.FC<TaskPropsType> = memo((
     }, [todoID,task])
 
     return (
-        <li key={task.id}>
-            <Button
-                title={'X'}
-                callback={onClickRemoveTask}
-            />
+        <div key={task.id}>
             <input
                 type={"checkbox"}
                 checked={task.status === TaskStatuses.Completed}
@@ -42,6 +40,12 @@ export const Task: React.FC<TaskPropsType> = memo((
                 title={task.title}
                 callback={(upValue) => setUpTasksTitle(upValue)}
             />
-        </li>
+            <IconButton
+                aria-label="delete"
+                onClick={onClickRemoveTask}
+            >
+                <Delete/>
+            </IconButton>
+        </div>
     )
 })

@@ -1,11 +1,14 @@
 import React, {ChangeEvent, KeyboardEvent, memo, useState} from 'react';
 import s from "../Todolist.module.css";
+import {AddBox} from "@mui/icons-material";
+import IconButton from "@mui/material/IconButton";
+import TextField from '@mui/material/TextField';
 
-type InputItemFormPropsType={
-    callback:(value:string)=>void
+type InputItemFormPropsType = {
+    callback: (value: string) => void
 }
 
-export const InputItemForm:React.FC<InputItemFormPropsType> = memo((props) => {
+export const InputItemForm: React.FC<InputItemFormPropsType> = memo((props) => {
     const [value, setValue] = useState('')
     const [error, setError] = useState<null | string>(null)
 
@@ -31,16 +34,23 @@ export const InputItemForm:React.FC<InputItemFormPropsType> = memo((props) => {
 
     return (
         <div>
-            <input
+            <TextField
                 value={value}
+                error={!!error}
                 onChange={onChangeInputHandler}
                 onKeyUp={onKeyUpHandler}
-                className={error ? s.inputError : ''}
+                id="outlined-basic"
+                label="Title"
+                variant="outlined"
+                helperText={error}
+                size={'small'}
             />
-            <button onClick={onClickAddTaskHandler}>
-                +
-            </button>
-            <div className={s.textError}>{error}</div>
+            <IconButton
+                onClick={onClickAddTaskHandler}
+                color={'primary'}
+            >
+                <AddBox/>
+            </IconButton>
         </div>
     );
 });

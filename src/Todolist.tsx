@@ -1,20 +1,15 @@
 import {useSelector} from "react-redux";
 import {RootDispatch, RootStoreType} from "./state/store";
-import {
-    addTaskAC,
-    changeFilterValueAC,
-    createTasksTC,
-    FilterValueType,
-    setTasksTC,
-    TaskCommonType
-} from "./state/taskReducer";
+import {changeFilterValueAC, createTasksTC, FilterValueType, setTasksTC, TaskCommonType} from "./state/taskReducer";
 import React, {FC, memo, useCallback, useEffect} from "react";
-import {Button} from "./components/Button";
-import {deleteTodoTC, setTodosTC, updateTodoTC} from "./state/todoReducer";
+import {deleteTodoTC, updateTodoTC} from "./state/todoReducer";
 import {InputItemForm} from "./components/InputItemForm";
 import {SuperEditbleSpan} from "./components/SuperEditbleSpan";
 import {Task} from "./components/Task";
 import {TaskStatuses} from "./API/api";
+import Button from '@mui/material/Button';
+import IconButton from "@mui/material/IconButton";
+import Delete from "@mui/icons-material/Delete";
 
 type TodolistPropsType = {
     todoID: string
@@ -62,32 +57,50 @@ export const Todolist: FC<TodolistPropsType> = memo((
         <div>
             <h3>
                 <SuperEditbleSpan title={title} callback={setUpTodoTitle}/>
-                <Button
-                    title={'X'}
-                    callback={onClickRemoveTodo}
-                />
+                <IconButton
+                    aria-label="delete"
+                    onClick={onClickRemoveTodo}
+                >
+                    <Delete/>
+                </IconButton>
             </h3>
 
             <InputItemForm callback={addTaskHandler}/>
 
-            <ul>
+            <div>
                 {filteredTask.map(t => <Task key={t.id} task={t} todoID={todoID}/>)}
-            </ul>
-            <Button
-                title={'All'}
-                callback={() => onClickSuperButtonHandler('All')}
-                filter={task[todoID].filter}
-            />
-            <Button
-                title={'Completed'}
-                callback={() => onClickSuperButtonHandler('Completed')}
-                filter={task[todoID].filter}
-            />
-            <Button
+            </div>
+
+            <Button variant={task[todoID].filter === 'All' ? 'contained' : 'outlined'}
+                    onClick={() => onClickSuperButtonHandler('All')}
+                    color={'primary'}
+                    size="small"
+                    style={{margin:'1px'}}
+            >
+                All
+            </Button>
+            <Button variant={task[todoID].filter === 'Completed' ? 'contained' : 'outlined'}
+                    onClick={() => onClickSuperButtonHandler('Completed')}
+                    color={'primary'}
+                    size="small"
+                    style={{margin:'1px'}}
+            >
+                Completed
+            </Button>
+            <Button variant={task[todoID].filter === 'Active' ? 'contained' : 'outlined'}
+                    onClick={() => onClickSuperButtonHandler('Active')}
+                    color={'primary'}
+                    size="small"
+                    style={{margin:'1px'}}
+            >
+                Active
+            </Button>
+
+           {/* <Button
                 title={'Active'}
                 callback={() => onClickSuperButtonHandler('Active')}
                 filter={task[todoID].filter}
-            />
+            />*/}
 
         </div>
     )
