@@ -108,3 +108,9 @@ export enum TaskPriorities {
     Urgently = 3,
     Later = 4
 }
+
+export enum ResponseResult {
+    OK = 0,
+    ERROR = 1,
+    CAPTCHA = 10,
+}

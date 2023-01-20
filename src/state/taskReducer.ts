@@ -1,7 +1,8 @@
 import {addNewTodoAC, removeTodoAC, setTodosAC} from "./todoReducer";
-import {taskAPI, TaskStatuses, TaskType, UpdateTaskModelType} from "../API/api";
+import {ResponseResult, taskAPI, TaskStatuses, TaskType, UpdateTaskModelType} from "../API/api";
 import {Dispatch} from "redux";
 import {RootStoreType} from "./store";
+import {RequestStatusType, setErrorAppAC, setStatusAppAC} from "./appReducer";
 
 //Type
 export type FilterValueType = 'All' | 'Active' | 'Completed'
@@ -9,6 +10,7 @@ export type FilterValueType = 'All' | 'Active' | 'Completed'
 type InTaskType = {
     data: TaskType[]
     filter: FilterValueType
+    entityStatus: RequestStatusType
 }
 export type TaskCommonType = {
     [key: string]: InTaskType
@@ -82,14 +84,14 @@ export const taskReducer = (state = initialState, action: ActionsType): TaskComm
         }
         case 'ADD_TODO': {
             return {
-                [action.payload.newTodo.id]: {data: [], filter: 'All'},
+                [action.payload.newTodo.id]: {data: [], filter: 'All', entityStatus: 'idle'},
                 ...state
             }
         }
         case "SET_TODO_FROM_BACK": {
             return action.payload.todos
                 .reduce((res: TaskCommonType, t) => {
-                    res[t.id] = {data: [], filter: 'All'}
+                    res[t.id] = {data: [], filter: 'All', entityStatus: 'idle'}
                     return res
                 }, {})
             // const copyState = {...state}
@@ -112,6 +114,12 @@ export const taskReducer = (state = initialState, action: ActionsType): TaskComm
                 }
             }
         }
+        case "CHANGE_ENTITY_STATUS": {
+            return {
+                ...state,
+                [action.payload.todoID]: {...state[action.payload.todoID], entityStatus: action.payload.entityStatus}
+            }
+        }
         default:
             return state
     }
@@ -126,6 +134,7 @@ type ActionsType = ReturnType<typeof removeTaskAC>
     | ReturnType<typeof setTodosAC>
     | ReturnType<typeof setTasksAC>
     | ReturnType<typeof updateTasksAC>
+    | ReturnType<typeof changeEntityStatusAC>
 
 
 //Action Creator
@@ -175,31 +184,54 @@ export const updateTasksAC = (todoID: string, taskID: string, model: UpdateDomai
         }
     } as const
 }
+export const changeEntityStatusAC = (todoID: string, entityStatus: RequestStatusType) => {
+    return {
+        type: 'CHANGE_ENTITY_STATUS',
+        payload: {
+            todoID,
+            entityStatus
+        }
+    } as const
+}
 
 //Thunk Creator
-export const setTasksTC = (todoID: string) => {
-    return (dispatch: Dispatch) => {
-        taskAPI.getTask(todoID)
-            .then((res) => {
-                dispatch(setTasksAC(todoID, res.items))
-            })
-    }
+export const setTasksTC = (todoID: string) => (dispatch: Dispatch) => {
+    dispatch(setStatusAppAC('loading'))
+    taskAPI.getTask(todoID)
+        .then((res) => {
+            dispatch(setTasksAC(todoID, res.items))
+            dispatch(setStatusAppAC('succeeded'))
+        })
 }
-export const createTasksTC = (todoID: string, title: string) => {
-    return (dispatch: Dispatch) => {
-        taskAPI.createTask(todoID, title)
-            .then((res) => {
+export const createTasksTC = (todoID: string, title: string) => (dispatch: Dispatch) => {
+    dispatch(setStatusAppAC('loading'))
+    dispatch(changeEntityStatusAC(todoID, 'loading'))
+    taskAPI.createTask(todoID, title)
+        .then((res) => {
+            if (res.resultCode === ResponseResult.OK) {
                 dispatch(addTaskAC(todoID, res.data.item))
-            })
-    }
+                dispatch(setStatusAppAC('succeeded'))
+                dispatch(changeEntityStatusAC(todoID, 'idle'))
+            } else {
+                if (res.messages.length) {
+                    dispatch(setErrorAppAC(res.messages[0]))
+                } else {
+                    dispatch(setErrorAppAC('Some error'))
+                }
+                dispatch(setStatusAppAC('failed'))
+                dispatch(changeEntityStatusAC(todoID, 'idle'))
+            }
+        })
 }
-export const removeTasksTC = (todoID: string, taskID: string) => {
-    return (dispatch: Dispatch) => {
-        taskAPI.deleteTask(todoID, taskID)
-            .then((res) => {
-                dispatch(removeTaskAC(todoID, taskID))
-            })
-    }
+export const removeTasksTC = (todoID: string, taskID: string) => (dispatch: Dispatch) => {
+    dispatch(setStatusAppAC('loading'))
+    dispatch(changeEntityStatusAC(todoID, 'loading'))
+    taskAPI.deleteTask(todoID, taskID)
+        .then((res) => {
+            dispatch(removeTaskAC(todoID, taskID))
+            dispatch(setStatusAppAC('succeeded'))
+            dispatch(changeEntityStatusAC(todoID, 'idle'))
+        })
 }
 
 export type UpdateDomainTaskModelType = {
@@ -211,26 +243,25 @@ export type UpdateDomainTaskModelType = {
     deadline?: string | null
 }
 
-export const updateTaskTC = (todoID: string, taskID: string, model: UpdateDomainTaskModelType) => {
-    return (dispatch: Dispatch, getState: () => RootStoreType) => {
+export const updateTaskTC = (todoID: string, taskID: string, model: UpdateDomainTaskModelType) => (dispatch: Dispatch, getState: () => RootStoreType) => {
+    dispatch(setStatusAppAC('loading'))
 
-        const task = getState().task[todoID].data.find((t) => t.id === taskID)
+    const task = getState().task[todoID].data.find((t) => t.id === taskID)
 
-        if (task) {
-            const apiModel: UpdateTaskModelType = {
-                title: task.title,
-                description: task.description,
-                priority: task.priority,
-                startDate: task.startDate,
-                deadline: task.deadline,
-                status: task.status,
-                ...model
-            }
-            taskAPI.updateTask(todoID, taskID, apiModel)
-                .then((res) => {
-                    dispatch(updateTasksAC(todoID, taskID, apiModel))
-                })
+    if (task) {
+        const apiModel: UpdateTaskModelType = {
+            title: task.title,
+            description: task.description,
+            priority: task.priority,
+            startDate: task.startDate,
+            deadline: task.deadline,
+            status: task.status,
+            ...model
         }
-
+        taskAPI.updateTask(todoID, taskID, apiModel)
+            .then((res) => {
+                dispatch(updateTasksAC(todoID, taskID, apiModel))
+                dispatch(setStatusAppAC('succeeded'))
+            })
     }
 }

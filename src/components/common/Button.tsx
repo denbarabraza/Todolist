@@ -1,6 +1,6 @@
 import React, {memo} from 'react';
-import {FilterValueType} from "../state/taskReducer";
-import s from '../Todolist.module.css'
+import {FilterValueType} from "../../state/taskReducer";
+import s from '../Todos/Todolist.module.css'
 
 type ButtonPropsType = {
     title: string,
@@ -28,3 +28,8 @@ export const Button: React.FC<ButtonPropsType> = memo((
     );
 });
 
+/* <Button
+                title={'Active'}
+                callback={() => onClickSuperButtonHandler('Active')}
+                filter={task[todoID].filter}
+            />*/

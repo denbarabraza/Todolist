@@ -1,11 +1,12 @@
 import React, {ChangeEvent, KeyboardEvent, memo, useState} from 'react';
-import s from "../Todolist.module.css";
 import {AddBox} from "@mui/icons-material";
 import IconButton from "@mui/material/IconButton";
 import TextField from '@mui/material/TextField';
+import {RequestStatusType} from "../../state/appReducer";
 
 type InputItemFormPropsType = {
     callback: (value: string) => void
+    entityStatus?: RequestStatusType
 }
 
 export const InputItemForm: React.FC<InputItemFormPropsType> = memo((props) => {
@@ -45,10 +46,7 @@ export const InputItemForm: React.FC<InputItemFormPropsType> = memo((props) => {
                 helperText={error}
                 size={'small'}
             />
-            <IconButton
-                onClick={onClickAddTaskHandler}
-                color={'primary'}
-            >
+            <IconButton onClick={onClickAddTaskHandler} color={'primary'} disabled={props.entityStatus === 'loading'}>
                 <AddBox/>
             </IconButton>
         </div>

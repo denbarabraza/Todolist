@@ -1,6 +1,8 @@
 import {v1} from "uuid";
-import {todoAPI, TodoType} from "../API/api";
+import {ResponseResult, todoAPI, TodoType} from "../API/api";
 import {Dispatch} from "redux";
+import {setErrorAppAC, setStatusAppAC} from "./appReducer";
+import {changeEntityStatusAC} from "./taskReducer";
 
 export const todolistId1 = v1()
 export const todolistId2 = v1()
@@ -75,35 +77,52 @@ export const setTodosAC = (todos: TodoType[]) => {
 }
 
 //Thunk Creator
-export const setTodosTC = () => {
-    return (dispatch: Dispatch) => {
-        todoAPI.getTodo()
-            .then((res) => {
-                dispatch(setTodosAC(res))
-            })
-    }
+export const setTodosTC = () => (dispatch: Dispatch) => {
+    dispatch(setStatusAppAC('loading'))
+    todoAPI.getTodo()
+        .then((res) => {
+            dispatch(setTodosAC(res))
+            dispatch(setStatusAppAC('succeeded'))
+        })
+        .catch((e) => {
+
+        })
 }
-export const createTodoTC = (title: string) => {
-    return (dispatch: Dispatch) => {
-        todoAPI.createTodo(title)
-            .then((res) => {
+export const createTodoTC = (title: string) => (dispatch: Dispatch) => {
+    dispatch(setStatusAppAC('loading'))
+    todoAPI.createTodo(title)
+        .then((res) => {
+            if (res.resultCode === ResponseResult.OK) {
                 dispatch(addNewTodoAC(res.data.item))
-            })
-    }
+                dispatch(setStatusAppAC('succeeded'))
+            } else {
+                if (res.messages.length) {
+                    dispatch(setErrorAppAC(res.messages[0]))
+                } else {
+                    dispatch(setErrorAppAC('Some error'))
+                }
+                dispatch(setStatusAppAC('failed'))
+            }
+        })
 }
-export const deleteTodoTC = (todoID: string) => {
-    return (dispatch: Dispatch) => {
-        todoAPI.deleteTodo(todoID)
-            .then((res) => {
-                dispatch(removeTodoAC(todoID))
-            })
-    }
+export const deleteTodoTC = (todoID: string) => (dispatch: Dispatch) => {
+    dispatch(changeEntityStatusAC(todoID, 'loading'))
+    dispatch(setStatusAppAC('loading'))
+    todoAPI.deleteTodo(todoID)
+        .then((res) => {
+            dispatch(removeTodoAC(todoID))
+            dispatch(setStatusAppAC('succeeded'))
+            dispatch(changeEntityStatusAC(todoID, 'idle'))
+        })
+        .catch((err) => {
+            console.log('server error')
+        })
 }
-export const updateTodoTC = (todoID: string, title: string) => {
-    return (dispatch: Dispatch) => {
-        todoAPI.updateTodo(todoID, title)
-            .then((res) => {
-                dispatch(setUpTodoTitleAC(todoID,title))
-            })
-    }
+export const updateTodoTC = (todoID: string, title: string) => (dispatch: Dispatch) => {
+    dispatch(setStatusAppAC('loading'))
+    todoAPI.updateTodo(todoID, title)
+        .then((res) => {
+            dispatch(setUpTodoTitleAC(todoID, title))
+            dispatch(setStatusAppAC('succeeded'))
+        })
 }

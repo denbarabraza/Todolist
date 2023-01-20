@@ -1,6 +1,6 @@
 import React from 'react';
 import {ComponentMeta, ComponentStory} from '@storybook/react';
-import {InputItemForm} from "../components/InputItemForm";
+import {InputItemForm} from "../components/common/InputItemForm";
 import {action} from "@storybook/addon-actions";
 
 
