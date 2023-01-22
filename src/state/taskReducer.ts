@@ -1,8 +1,9 @@
 import {addNewTodoAC, removeTodoAC, setTodosAC} from "./todoReducer";
-import {ResponseResult, taskAPI, TaskStatuses, TaskType, UpdateTaskModelType} from "../API/api";
+import {ResponseResult, taskAPI, TaskType, UpdateTaskModelType} from "../API/api";
 import {Dispatch} from "redux";
 import {RootStoreType} from "./store";
 import {RequestStatusType, setErrorAppAC, setStatusAppAC} from "./appReducer";
+import axios, {AxiosError} from "axios";
 
 //Type
 export type FilterValueType = 'All' | 'Active' | 'Completed'
@@ -195,43 +196,62 @@ export const changeEntityStatusAC = (todoID: string, entityStatus: RequestStatus
 }
 
 //Thunk Creator
-export const setTasksTC = (todoID: string) => (dispatch: Dispatch) => {
+export const setTasksTC = (todoID: string) => async (dispatch: Dispatch) => {
     dispatch(setStatusAppAC('loading'))
-    taskAPI.getTask(todoID)
-        .then((res) => {
-            dispatch(setTasksAC(todoID, res.items))
-            dispatch(setStatusAppAC('succeeded'))
-        })
+    try {
+        let res = await taskAPI.getTask(todoID)
+        dispatch(setTasksAC(todoID, res.items))
+        dispatch(setStatusAppAC('succeeded'))
+    } catch (e) {
+        if (axios.isAxiosError<AxiosError<{ message: string }>>(e)) {
+            let err = e.response ? e.response?.data.message : e.message
+            dispatch(setErrorAppAC(err))
+        }
+        dispatch(setStatusAppAC('failed'))
+    }
 }
-export const createTasksTC = (todoID: string, title: string) => (dispatch: Dispatch) => {
+export const createTasksTC = (todoID: string, title: string) => async (dispatch: Dispatch) => {
+    debugger
     dispatch(setStatusAppAC('loading'))
     dispatch(changeEntityStatusAC(todoID, 'loading'))
-    taskAPI.createTask(todoID, title)
-        .then((res) => {
-            if (res.resultCode === ResponseResult.OK) {
-                dispatch(addTaskAC(todoID, res.data.item))
-                dispatch(setStatusAppAC('succeeded'))
-                dispatch(changeEntityStatusAC(todoID, 'idle'))
+    try {
+        let res = await taskAPI.createTask(todoID, title)
+        if (res.resultCode === ResponseResult.OK) {
+            dispatch(addTaskAC(todoID, res.data.item))
+        } else {
+            if (res.messages.length) {
+                dispatch(setErrorAppAC(res.messages[0]))
             } else {
-                if (res.messages.length) {
-                    dispatch(setErrorAppAC(res.messages[0]))
-                } else {
-                    dispatch(setErrorAppAC('Some error'))
-                }
-                dispatch(setStatusAppAC('failed'))
-                dispatch(changeEntityStatusAC(todoID, 'idle'))
+                dispatch(setErrorAppAC('Some error'))
             }
-        })
+        }
+        dispatch(setStatusAppAC('succeeded'))
+        dispatch(changeEntityStatusAC(todoID, 'succeeded'))
+    } catch (e) {
+        if (axios.isAxiosError<AxiosError<{ message: string }>>(e)) {
+            let err = e.response ? e.response?.data.message : e.message
+            dispatch(setErrorAppAC(err))
+        }
+        dispatch(setStatusAppAC('failed'))
+        dispatch(changeEntityStatusAC(todoID, 'failed'))
+    }
 }
-export const removeTasksTC = (todoID: string, taskID: string) => (dispatch: Dispatch) => {
+export const removeTasksTC = (todoID: string, taskID: string) => async (dispatch: Dispatch) => {
     dispatch(setStatusAppAC('loading'))
     dispatch(changeEntityStatusAC(todoID, 'loading'))
-    taskAPI.deleteTask(todoID, taskID)
-        .then((res) => {
-            dispatch(removeTaskAC(todoID, taskID))
-            dispatch(setStatusAppAC('succeeded'))
-            dispatch(changeEntityStatusAC(todoID, 'idle'))
-        })
+    try {
+        let res = await taskAPI.deleteTask(todoID, taskID)
+        dispatch(removeTaskAC(todoID, taskID))
+        dispatch(setStatusAppAC('succeeded'))
+        dispatch(changeEntityStatusAC(todoID, 'succeeded'))
+    } catch (e) {
+        if (axios.isAxiosError<AxiosError<{ message: string }>>(e)) {
+            let err = e.response ? e.response?.data.message : e.message
+            dispatch(setErrorAppAC(err))
+        }
+        dispatch(setStatusAppAC('failed'))
+        dispatch(changeEntityStatusAC(todoID, 'failed'))
+    }
 }
 
 export type UpdateDomainTaskModelType = {
@@ -243,9 +263,7 @@ export type UpdateDomainTaskModelType = {
     deadline?: string | null
 }
 
-export const updateTaskTC = (todoID: string, taskID: string, model: UpdateDomainTaskModelType) => (dispatch: Dispatch, getState: () => RootStoreType) => {
-    dispatch(setStatusAppAC('loading'))
-
+export const updateTaskTC = (todoID: string, taskID: string, model: UpdateDomainTaskModelType) => async (dispatch: Dispatch, getState: () => RootStoreType) => {
     const task = getState().task[todoID].data.find((t) => t.id === taskID)
 
     if (task) {
@@ -258,10 +276,29 @@ export const updateTaskTC = (todoID: string, taskID: string, model: UpdateDomain
             status: task.status,
             ...model
         }
-        taskAPI.updateTask(todoID, taskID, apiModel)
-            .then((res) => {
+
+        dispatch(setStatusAppAC('loading'))
+        dispatch(changeEntityStatusAC(todoID, 'loading'))
+        try {
+            let res = await taskAPI.updateTask(todoID, taskID, apiModel)
+            if (res.resultCode === ResponseResult.OK) {
                 dispatch(updateTasksAC(todoID, taskID, apiModel))
-                dispatch(setStatusAppAC('succeeded'))
-            })
+            } else {
+                if (res.messages.length) {
+                    dispatch(setErrorAppAC(res.messages[0]))
+                } else {
+                    dispatch(setErrorAppAC('Some error'))
+                }
+            }
+            dispatch(setStatusAppAC('succeeded'))
+            dispatch(changeEntityStatusAC(todoID, 'succeeded'))
+        } catch (e) {
+            if (axios.isAxiosError<AxiosError<{ message: string }>>(e)) {
+                let err = e.response ? e.response?.data.message : e.message
+                dispatch(setErrorAppAC(err))
+            }
+            dispatch(setStatusAppAC('failed'))
+            dispatch(changeEntityStatusAC(todoID, 'failed'))
+        }
     }
 }

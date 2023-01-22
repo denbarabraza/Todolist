@@ -3,6 +3,7 @@ import {ResponseResult, todoAPI, TodoType} from "../API/api";
 import {Dispatch} from "redux";
 import {setErrorAppAC, setStatusAppAC} from "./appReducer";
 import {changeEntityStatusAC} from "./taskReducer";
+import {AxiosError} from "axios";
 
 export const todolistId1 = v1()
 export const todolistId2 = v1()
@@ -84,14 +85,17 @@ export const setTodosTC = () => (dispatch: Dispatch) => {
             dispatch(setTodosAC(res))
             dispatch(setStatusAppAC('succeeded'))
         })
-        .catch((e) => {
-
+        .catch((e: AxiosError<{ message: string }>) => {
+            let err = e.response ? e.response?.data.message : e.message
+            dispatch(setErrorAppAC(err))
+            dispatch(setStatusAppAC('failed'))
         })
 }
 export const createTodoTC = (title: string) => (dispatch: Dispatch) => {
     dispatch(setStatusAppAC('loading'))
     todoAPI.createTodo(title)
         .then((res) => {
+            debugger
             if (res.resultCode === ResponseResult.OK) {
                 dispatch(addNewTodoAC(res.data.item))
                 dispatch(setStatusAppAC('succeeded'))
@@ -104,6 +108,11 @@ export const createTodoTC = (title: string) => (dispatch: Dispatch) => {
                 dispatch(setStatusAppAC('failed'))
             }
         })
+        .catch((e: AxiosError<{ message: string }>) => {
+            let err = e.response ? e.response?.data.message : e.message
+            dispatch(setErrorAppAC(err))
+            dispatch(setStatusAppAC('failed'))
+        })
 }
 export const deleteTodoTC = (todoID: string) => (dispatch: Dispatch) => {
     dispatch(changeEntityStatusAC(todoID, 'loading'))
@@ -112,17 +121,35 @@ export const deleteTodoTC = (todoID: string) => (dispatch: Dispatch) => {
         .then((res) => {
             dispatch(removeTodoAC(todoID))
             dispatch(setStatusAppAC('succeeded'))
-            dispatch(changeEntityStatusAC(todoID, 'idle'))
+            dispatch(changeEntityStatusAC(todoID, 'succeeded'))
         })
-        .catch((err) => {
-            console.log('server error')
+        .catch((e: AxiosError<{ message: string }>) => {
+            let err = e.response ? e.response?.data.message : e.message
+            dispatch(setErrorAppAC(err))
+            dispatch(setStatusAppAC('failed'))
+            dispatch(changeEntityStatusAC(todoID, 'failed'))
         })
 }
 export const updateTodoTC = (todoID: string, title: string) => (dispatch: Dispatch) => {
     dispatch(setStatusAppAC('loading'))
     todoAPI.updateTodo(todoID, title)
         .then((res) => {
-            dispatch(setUpTodoTitleAC(todoID, title))
-            dispatch(setStatusAppAC('succeeded'))
-        })
+            if (res.resultCode === ResponseResult.OK) {
+                dispatch(setUpTodoTitleAC(todoID, title))
+                dispatch(setStatusAppAC('succeeded'))
+            }else{
+                if(res.messages.length){
+                    dispatch(setErrorAppAC(res.messages[0]))
+                }else{
+                    dispatch(setErrorAppAC('Some error'))
+                }
+                dispatch(setStatusAppAC('succeeded'))
+            }
+        }).catch((e: AxiosError<{ message: string }>) => {
+            debugger
+        let err = e.response ? e.response?.data.message : e.message
+        dispatch(setErrorAppAC(err))
+        dispatch(setStatusAppAC('failed'))
+        dispatch(changeEntityStatusAC(todoID, 'failed'))
+    })
 }
