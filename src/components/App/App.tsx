@@ -1,38 +1,47 @@
-import React, {useCallback, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import './App.module.css';
-import {RootDispatch, useAppSelector} from "../../state/store";
-import {createTodoTC, setTodosTC} from "../../state/todoReducer";
-import {InputItemForm} from "../common/InputItemForm";
-import Grid from '@mui/material/Grid';
+import {RootDispatch, store, useAppSelector} from "../../state/store";
 import Container from '@mui/material/Container';
 import {TodolistItem} from "../Todos/TodolistItem";
 import AppBarItem from "./AppBarItem";
 import LinearProgress from '@mui/material/LinearProgress';
 import {RequestStatusType} from "../../state/appReducer";
 import {ErrorSnackbar} from "../common/ErrorSnackbar";
+import {Login} from "../Login/Login";
+import {Navigate, Route, Routes} from "react-router-dom";
+import {initializeAppTC} from "../../state/authReducer";
+import CircularProgress from "@mui/material/CircularProgress";
 
 function App() {
+    console.log(store.getState())
     console.log('App rendering')
     let status = useAppSelector<RequestStatusType>(state => state.app.statusApp)
+    let isInitialized = useAppSelector<boolean>(state => state.app.isInitialized)
     const dispatch = RootDispatch()
 
-    useEffect(() => {
-        dispatch(setTodosTC())
-    }, [])
+    useEffect(()=>{
+        debugger
+        dispatch(initializeAppTC())
+    },[])
 
-    const addNewTodo = useCallback((value: string) => {
-        dispatch(createTodoTC(value))
-    }, [])
+    if (!isInitialized) {
+        return <div
+            style={{position: 'fixed', top: '30%', textAlign: 'center', width: '100%'}}>
+            <CircularProgress/>
+        </div>
+    }
 
     return (
         <div>
             <AppBarItem/>
             {status === 'loading' && <LinearProgress/>}
             <Container maxWidth={'xl'}>
-                <Grid container style={{padding: '20px'}}>
-                    <InputItemForm callback={addNewTodo}/>
-                </Grid>
-                <TodolistItem/>
+                <Routes>
+                    <Route path={'/'} element={<TodolistItem/>}/>
+                    <Route path={'/login'} element={<Login/>}/>
+                    <Route path={'/404'} element={<h1>404: PAGE NOT FOUND</h1>}/>
+                    <Route path='*' element={<Navigate to={'/404'}/>}/>
+                </Routes>
             </Container>
             <ErrorSnackbar/>
         </div>
