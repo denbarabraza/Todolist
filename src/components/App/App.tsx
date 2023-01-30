@@ -13,8 +13,6 @@ import {initializeAppTC} from "../../state/authReducer";
 import CircularProgress from "@mui/material/CircularProgress";
 
 function App() {
-    console.log(store.getState())
-    console.log('App rendering')
     let status = useAppSelector<RequestStatusType>(state => state.app.statusApp)
     let isInitialized = useAppSelector<boolean>(state => state.app.isInitialized)
     const dispatch = RootDispatch()
@@ -49,3 +47,4 @@ function App() {
 }
 
 export default App;
+
