@@ -1,8 +1,7 @@
 import React from 'react';
-import {ComponentMeta, ComponentStory} from '@storybook/react';
-import {InputItemForm} from "../components/common/InputItemForm";
-import {action} from "@storybook/addon-actions";
-
+import { ComponentMeta, ComponentStory } from '@storybook/react';
+import { InputItemForm } from '../common/components/InputItemForm';
+import { action } from '@storybook/addon-actions';
 
 export default {
   title: 'TODO/InputItemForm',
@@ -13,11 +12,12 @@ export default {
   },
 } as ComponentMeta<typeof InputItemForm>;
 
-
-const Template: ComponentStory<typeof InputItemForm> = (args) => <InputItemForm {...args} />;
+const Template: ComponentStory<typeof InputItemForm> = args => (
+  <InputItemForm {...args} />
+);
 
 export const InputItemFormStory = Template.bind({});
 
 InputItemFormStory.args = {
-  callback:action('Input value')
+  callback: action('Input value'),
 };
