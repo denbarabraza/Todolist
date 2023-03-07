@@ -1,12 +1,14 @@
 import React from 'react';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
+
 import { Menu } from '@mui/icons-material';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
 import AppBar from '@mui/material/AppBar';
-import { RootDispatch } from '../store/store';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+
 import { logOutTC } from '../features/auth/authReducer';
+import { RootDispatch } from '../store/store';
 
 const AppBarItem = () => {
   const dispatch = RootDispatch();

@@ -1,4 +1,5 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
+
 import { todoAPI } from '../api/api';
 
 export default {
@@ -26,10 +27,11 @@ export const CreateTodolists = () => {
   const onChangeTitleValue = (e: ChangeEvent<HTMLInputElement>) => {
     setTitle(e.currentTarget.value);
   };
+
   return (
     <div>
       <div>{JSON.stringify(state)}</div>
-      <input value={state} placeholder={'Title'} onChange={onChangeTitleValue} />
+      <input value={state} placeholder="Title" onChange={onChangeTitleValue} />
       <button onClick={onClickHandler}>Send value</button>
     </div>
   );
@@ -49,7 +51,7 @@ export const DeleteTodolists = () => {
   return (
     <div>
       <div>{JSON.stringify(state)}</div>
-      <input value={todoID} placeholder={'TodoID'} onChange={onChangeTodoValue} />
+      <input value={todoID} placeholder="TodoID" onChange={onChangeTodoValue} />
       <button onClick={onClickHandler}>Send value</button>
     </div>
   );
@@ -73,8 +75,8 @@ export const UpdateTodolists = () => {
   return (
     <div>
       <div>{JSON.stringify(state)}</div>
-      <input value={todoID} placeholder={'TodoID'} onChange={onChangeTodoValue} />
-      <input value={title} placeholder={'Title'} onChange={onChangeTitleValue} />
+      <input value={todoID} placeholder="TodoID" onChange={onChangeTodoValue} />
+      <input value={title} placeholder="Title" onChange={onChangeTitleValue} />
       <button onClick={onClickHandler}>Send value</button>
     </div>
   );

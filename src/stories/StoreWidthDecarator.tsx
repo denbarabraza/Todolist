@@ -1,10 +1,11 @@
-import { v1 } from 'uuid';
-import { combineReducers, legacy_createStore } from 'redux';
-import { taskReducer } from '../features/tasks/taskReducer';
-import { RootStoreType } from '../store/store';
-import { todolistId1, todolistId2, todoReducer } from '../features/todos/todoReducer';
 import { Provider } from 'react-redux';
+import { combineReducers, legacy_createStore } from 'redux';
+import { v1 } from 'uuid';
+
 import { TaskPriorities, TaskStatuses } from '../api/api';
+import { taskReducer } from '../features/tasks/taskReducer';
+import { todolistId1, todolistId2, todoReducer } from '../features/todos/todoReducer';
+import { RootStoreType } from '../store/store';
 
 const rootReducer = combineReducers({
   task: taskReducer,

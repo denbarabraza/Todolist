@@ -1,10 +1,11 @@
-import { AnyAction, applyMiddleware, combineReducers, legacy_createStore } from 'redux';
-import { taskReducer } from '../features/tasks/taskReducer';
-import { todoReducer } from '../features/todos/todoReducer';
-import thunk, { ThunkDispatch } from 'redux-thunk';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
+import { AnyAction, applyMiddleware, combineReducers, legacy_createStore } from 'redux';
+import thunk, { ThunkDispatch } from 'redux-thunk';
+
 import { appReducer } from '../app/appReducer';
 import { authReducer } from '../features/auth/authReducer';
+import { taskReducer } from '../features/tasks/taskReducer';
+import { todoReducer } from '../features/todos/todoReducer';
 
 const rootReducer = combineReducers({
   task: taskReducer,

@@ -1,7 +1,8 @@
-import { authAPI, LoginDataType, ResponseResult } from '../../api/api';
-import { Dispatch } from 'redux';
-import { setErrorAppAC, setInitializedAC, setStatusAppAC } from '../../app/appReducer';
 import axios from 'axios';
+import { Dispatch } from 'redux';
+
+import { authAPI, LoginDataType, ResponseResult } from '../../api/api';
+import { setErrorAppAC, setInitializedAC, setStatusAppAC } from '../../app/appReducer';
 
 const InitialStateAuth = {
   isLoggedIn: false,
@@ -19,7 +20,7 @@ export const authReducer = (
   }
 };
 
-//Action Creator
+// Action Creator
 export const setLoggedInAC = (isLoggedIn: boolean) => {
   return {
     type: 'auth/SET-IS-LOGGED-IN',
@@ -28,11 +29,12 @@ export const setLoggedInAC = (isLoggedIn: boolean) => {
     },
   } as const;
 };
-//Thunk
+// Thunk
 export const setLoggedInTC = (loginData: LoginDataType) => async (dispatch: Dispatch) => {
   dispatch(setStatusAppAC('loading'));
   try {
-    let res = await authAPI.logIN(loginData);
+    const res = await authAPI.logIN(loginData);
+
     if (res.resultCode === ResponseResult.OK) {
       dispatch(setLoggedInAC(true));
       dispatch(setStatusAppAC('succeeded'));
@@ -46,7 +48,8 @@ export const setLoggedInTC = (loginData: LoginDataType) => async (dispatch: Disp
     }
   } catch (e) {
     if (axios.isAxiosError<{ message: string }>(e)) {
-      let err = e.response ? e.response?.data.message : e.message;
+      const err = e.response ? e.response?.data.message : e.message;
+
       dispatch(setErrorAppAC(err));
       dispatch(setStatusAppAC('failed'));
     }
@@ -56,7 +59,8 @@ export const setLoggedInTC = (loginData: LoginDataType) => async (dispatch: Disp
 export const initializeAppTC = () => async (dispatch: Dispatch) => {
   dispatch(setStatusAppAC('loading'));
   try {
-    let res = await authAPI.me();
+    const res = await authAPI.me();
+
     if (res.resultCode === ResponseResult.OK) {
       dispatch(setLoggedInAC(true));
       dispatch(setStatusAppAC('succeeded'));
@@ -70,7 +74,8 @@ export const initializeAppTC = () => async (dispatch: Dispatch) => {
     }
   } catch (e) {
     if (axios.isAxiosError<{ message: string }>(e)) {
-      let err = e.response ? e.response?.data.message : e.message;
+      const err = e.response ? e.response?.data.message : e.message;
+
       dispatch(setErrorAppAC(err));
       dispatch(setStatusAppAC('failed'));
     }
@@ -82,7 +87,8 @@ export const initializeAppTC = () => async (dispatch: Dispatch) => {
 export const logOutTC = () => async (dispatch: Dispatch) => {
   dispatch(setStatusAppAC('loading'));
   try {
-    let res = await authAPI.logOUT();
+    const res = await authAPI.logOUT();
+
     if (res.resultCode === ResponseResult.OK) {
       dispatch(setLoggedInAC(false));
       dispatch(setStatusAppAC('succeeded'));
@@ -96,14 +102,15 @@ export const logOutTC = () => async (dispatch: Dispatch) => {
     }
   } catch (e) {
     if (axios.isAxiosError<{ message: string }>(e)) {
-      let err = e.response ? e.response?.data.message : e.message;
+      const err = e.response ? e.response?.data.message : e.message;
+
       dispatch(setErrorAppAC(err));
       dispatch(setStatusAppAC('failed'));
     }
   }
 };
 
-//types
+// types
 type InitialStateAuthType = {
   isLoggedIn: boolean;
 };

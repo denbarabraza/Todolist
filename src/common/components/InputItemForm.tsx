@@ -1,7 +1,9 @@
 import React, { ChangeEvent, KeyboardEvent, memo, useState } from 'react';
+
 import { AddBox } from '@mui/icons-material';
 import IconButton from '@mui/material/IconButton';
 import TextField from '@mui/material/TextField';
+
 import { RequestStatusType } from '../../app/appReducer';
 
 type InputItemFormPropsType = {
@@ -12,8 +14,6 @@ type InputItemFormPropsType = {
 export const InputItemForm: React.FC<InputItemFormPropsType> = memo(props => {
   const [value, setValue] = useState('');
   const [error, setError] = useState<null | string>(null);
-
-  console.log('InputItemForm rendring');
 
   const onChangeInputHandler = (e: ChangeEvent<HTMLInputElement>) => {
     setValue(e.currentTarget.value);
@@ -44,11 +44,11 @@ export const InputItemForm: React.FC<InputItemFormPropsType> = memo(props => {
         label="Title"
         variant="outlined"
         helperText={error}
-        size={'small'}
+        size="small"
       />
       <IconButton
         onClick={onClickAddTaskHandler}
-        color={'primary'}
+        color="primary"
         disabled={props.entityStatus === 'loading'}
       >
         <AddBox />

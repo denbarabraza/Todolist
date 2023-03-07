@@ -1,4 +1,5 @@
 import React, { ChangeEvent, useState } from 'react';
+
 import { taskAPI, UpdateTaskModelType } from '../api/api';
 
 export default {
@@ -19,7 +20,7 @@ export const GetTask = () => {
   return (
     <div>
       <div>{JSON.stringify(state)}</div>
-      <input value={todoID} placeholder={'TodoID'} onChange={onChangeTodoValue} />
+      <input value={todoID} placeholder="TodoID" onChange={onChangeTodoValue} />
       <button onClick={onClickHandler}>Send value</button>
     </div>
   );
@@ -45,8 +46,8 @@ export const CreateTask = () => {
   return (
     <div>
       <div>{JSON.stringify(state)}</div>
-      <input value={todoID} placeholder={'TodoID'} onChange={onChangeTodoValue} />
-      <input value={title} placeholder={'Title'} onChange={onChangeTitleValue} />
+      <input value={todoID} placeholder="TodoID" onChange={onChangeTodoValue} />
+      <input value={title} placeholder="Title" onChange={onChangeTitleValue} />
       <button onClick={onClickHandler}>Send value</button>
     </div>
   );
@@ -58,8 +59,8 @@ export const UpdateTask = () => {
   const [todoID, setTodoID] = useState<string>('');
   const [taskID, setTaskID] = useState<string>('');
 
-  let obj: UpdateTaskModelType = {
-    title: title,
+  const obj: UpdateTaskModelType = {
+    title,
     description: 'blal',
     status: 1,
     priority: 1,
@@ -83,9 +84,9 @@ export const UpdateTask = () => {
   return (
     <div>
       <div>{JSON.stringify(state)}</div>
-      <input value={todoID} placeholder={'TodoID'} onChange={onChangeTodoValue} />
-      <input value={taskID} placeholder={'TaskID'} onChange={onChangeTaskValue} />
-      <input value={title} placeholder={'Title'} onChange={onChangeTitleValue} />
+      <input value={todoID} placeholder="TodoID" onChange={onChangeTodoValue} />
+      <input value={taskID} placeholder="TaskID" onChange={onChangeTaskValue} />
+      <input value={title} placeholder="Title" onChange={onChangeTitleValue} />
       <button onClick={onClickHandler}>Send value</button>
     </div>
   );
@@ -109,8 +110,8 @@ export const DeleteTask = () => {
   return (
     <div>
       <div>{JSON.stringify(state)}</div>
-      <input value={todoID} placeholder={'TodoID'} onChange={onChangeTodoValue} />
-      <input value={taskID} placeholder={'TaskID'} onChange={onChangeTaskValue} />
+      <input value={todoID} placeholder="TodoID" onChange={onChangeTodoValue} />
+      <input value={taskID} placeholder="TaskID" onChange={onChangeTaskValue} />
       <button onClick={onClickHandler}>Send value</button>
     </div>
   );

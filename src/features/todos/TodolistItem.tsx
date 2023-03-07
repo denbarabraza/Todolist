@@ -1,21 +1,23 @@
 import React, { useCallback, useEffect } from 'react';
+
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import { Todolist } from './Todolist';
 import { useSelector } from 'react-redux';
-import { RootDispatch, RootStoreType, useAppSelector } from '../../store/store';
+import { Navigate } from 'react-router-dom';
+
 import { TodoType } from '../../api/api';
 import { InputItemForm } from '../../common/components/InputItemForm';
+import { RootDispatch, RootStoreType, useAppSelector } from '../../store/store';
+
+import { Todolist } from './Todolist';
 import { createTodoTC, setTodosTC } from './todoReducer';
-import { Navigate } from 'react-router-dom';
 
 export const TodolistItem = () => {
   const todolist = useSelector<RootStoreType, TodoType[]>(state => state.todolist);
-  let isLoggedIn = useAppSelector<boolean>(state => state.auth.isLoggedIn);
+  const isLoggedIn = useAppSelector<boolean>(state => state.auth.isLoggedIn);
   const dispatch = RootDispatch();
 
   useEffect(() => {
-    debugger;
     if (!isLoggedIn) return;
     dispatch(setTodosTC());
   }, []);
@@ -25,7 +27,7 @@ export const TodolistItem = () => {
   }, []);
 
   if (!isLoggedIn) {
-    return <Navigate to={'/login'} />;
+    return <Navigate to="/login" />;
   }
 
   return (

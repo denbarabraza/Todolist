@@ -1,16 +1,16 @@
-import { v1 } from 'uuid';
-import { ResponseResult, todoAPI, TodoType } from '../../api/api';
+import { AxiosError } from 'axios';
 import { Dispatch } from 'redux';
+import { v1 } from 'uuid';
+
+import { ResponseResult, todoAPI, TodoType } from '../../api/api';
 import { setErrorAppAC, setStatusAppAC } from '../../app/appReducer';
 import { changeEntityStatusAC } from '../tasks/taskReducer';
-import { AxiosError } from 'axios';
 
 export const todolistId1 = v1();
 export const todolistId2 = v1();
 
 const initialState: TodoType[] = [];
 
-//Reducer
 export const todoReducer = (state = initialState, action: ActionsType): TodoType[] => {
   switch (action.type) {
     case 'REMOVE_TODO': {
@@ -31,14 +31,13 @@ export const todoReducer = (state = initialState, action: ActionsType): TodoType
       return state;
   }
 };
-//Action Type
+
 type ActionsType =
   | ReturnType<typeof removeTodoAC>
   | ReturnType<typeof addNewTodoAC>
   | ReturnType<typeof setUpTodoTitleAC>
   | ReturnType<typeof setTodosAC>;
 
-//Action Creator
 export const removeTodoAC = (todoID: string) => {
   return {
     type: 'REMOVE_TODO',
@@ -73,7 +72,6 @@ export const setTodosAC = (todos: TodoType[]) => {
   } as const;
 };
 
-//Thunk Creator
 export const setTodosTC = () => (dispatch: Dispatch) => {
   dispatch(setStatusAppAC('loading'));
   todoAPI
@@ -83,7 +81,8 @@ export const setTodosTC = () => (dispatch: Dispatch) => {
       dispatch(setStatusAppAC('succeeded'));
     })
     .catch((e: AxiosError<{ message: string }>) => {
-      let err = e.response ? e.response?.data.message : e.message;
+      const err = e.response ? e.response?.data.message : e.message;
+
       dispatch(setErrorAppAC(err));
       dispatch(setStatusAppAC('failed'));
     });
@@ -93,7 +92,6 @@ export const createTodoTC = (title: string) => (dispatch: Dispatch) => {
   todoAPI
     .createTodo(title)
     .then(res => {
-      debugger;
       if (res.resultCode === ResponseResult.OK) {
         dispatch(addNewTodoAC(res.data.item));
         dispatch(setStatusAppAC('succeeded'));
@@ -107,7 +105,8 @@ export const createTodoTC = (title: string) => (dispatch: Dispatch) => {
       }
     })
     .catch((e: AxiosError<{ message: string }>) => {
-      let err = e.response ? e.response?.data.message : e.message;
+      const err = e.response ? e.response?.data.message : e.message;
+
       dispatch(setErrorAppAC(err));
       dispatch(setStatusAppAC('failed'));
     });
@@ -123,7 +122,8 @@ export const deleteTodoTC = (todoID: string) => (dispatch: Dispatch) => {
       dispatch(changeEntityStatusAC(todoID, 'succeeded'));
     })
     .catch((e: AxiosError<{ message: string }>) => {
-      let err = e.response ? e.response?.data.message : e.message;
+      const err = e.response ? e.response?.data.message : e.message;
+
       dispatch(setErrorAppAC(err));
       dispatch(setStatusAppAC('failed'));
       dispatch(changeEntityStatusAC(todoID, 'failed'));
@@ -147,8 +147,8 @@ export const updateTodoTC = (todoID: string, title: string) => (dispatch: Dispat
       }
     })
     .catch((e: AxiosError<{ message: string }>) => {
-      debugger;
-      let err = e.response ? e.response?.data.message : e.message;
+      const err = e.response ? e.response?.data.message : e.message;
+
       dispatch(setErrorAppAC(err));
       dispatch(setStatusAppAC('failed'));
       dispatch(changeEntityStatusAC(todoID, 'failed'));

@@ -1,5 +1,15 @@
+import React, { FC, memo, useCallback, useEffect } from 'react';
+
+import Delete from '@mui/icons-material/Delete';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
 import { useSelector } from 'react-redux';
+
+import { TaskStatuses } from '../../api/api';
+import { InputItemForm } from '../../common/components/InputItemForm';
+import { SuperEditbleSpan } from '../../common/components/SuperEditbleSpan';
 import { RootDispatch, RootStoreType } from '../../store/store';
+import { Task } from '../tasks/Task';
 import {
   changeFilterValueAC,
   createTasksTC,
@@ -7,15 +17,8 @@ import {
   setTasksTC,
   TaskCommonType,
 } from '../tasks/taskReducer';
-import React, { FC, memo, useCallback, useEffect } from 'react';
+
 import { deleteTodoTC, updateTodoTC } from './todoReducer';
-import { InputItemForm } from '../../common/components/InputItemForm';
-import { SuperEditbleSpan } from '../../common/components/SuperEditbleSpan';
-import { Task } from '../tasks/Task';
-import { TaskStatuses } from '../../api/api';
-import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
-import Delete from '@mui/icons-material/Delete';
 
 type TodolistPropsType = {
   todoID: string;
@@ -23,8 +26,6 @@ type TodolistPropsType = {
 };
 
 export const Todolist: FC<TodolistPropsType> = memo(({ todoID, title }) => {
-  console.log('TODO rendering');
-
   const task = useSelector<RootStoreType, TaskCommonType>(state => state.task);
   const dispatch = RootDispatch();
 
@@ -53,6 +54,7 @@ export const Todolist: FC<TodolistPropsType> = memo(({ todoID, title }) => {
   }, []);
 
   let filteredTask = task[todoID].data;
+
   if (task[todoID].filter === 'Active') {
     filteredTask = task[todoID].data.filter(e => e.status === TaskStatuses.New);
   }
@@ -89,7 +91,7 @@ export const Todolist: FC<TodolistPropsType> = memo(({ todoID, title }) => {
       <Button
         variant={task[todoID].filter === 'All' ? 'contained' : 'outlined'}
         onClick={() => onClickSuperButtonHandler('All')}
-        color={'primary'}
+        color="primary"
         size="small"
         style={{ margin: '1px' }}
       >
@@ -98,7 +100,7 @@ export const Todolist: FC<TodolistPropsType> = memo(({ todoID, title }) => {
       <Button
         variant={task[todoID].filter === 'Completed' ? 'contained' : 'outlined'}
         onClick={() => onClickSuperButtonHandler('Completed')}
-        color={'primary'}
+        color="primary"
         size="small"
         style={{ margin: '1px' }}
       >
@@ -107,7 +109,7 @@ export const Todolist: FC<TodolistPropsType> = memo(({ todoID, title }) => {
       <Button
         variant={task[todoID].filter === 'Active' ? 'contained' : 'outlined'}
         onClick={() => onClickSuperButtonHandler('Active')}
-        color={'primary'}
+        color="primary"
         size="small"
         style={{ margin: '1px' }}
       >

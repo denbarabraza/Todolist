@@ -1,7 +1,9 @@
 import React from 'react';
-import { ComponentMeta, ComponentStory } from '@storybook/react';
-import { InputItemForm } from '../common/components/InputItemForm';
+
 import { action } from '@storybook/addon-actions';
+import { ComponentMeta, ComponentStory } from '@storybook/react';
+
+import { InputItemForm } from '../common/components/InputItemForm';
 
 export default {
   title: 'TODO/InputItemForm',

@@ -1,5 +1,3 @@
-import { store } from '../store/store';
-
 export type RequestStatusType = 'idle' | 'loading' | 'succeeded' | 'failed';
 
 type AppReducerType = {
@@ -13,7 +11,7 @@ const initialState: AppReducerType = {
   errorApp: null,
   isInitialized: false,
 };
-//Reducer
+
 export const appReducer = (state = initialState, action: ActionsType): AppReducerType => {
   switch (action.type) {
     case 'APP/SET_STATUS': {
@@ -30,13 +28,13 @@ export const appReducer = (state = initialState, action: ActionsType): AppReduce
   }
 };
 
-//Action Type
+// Action Type
 type ActionsType =
   | ReturnType<typeof setStatusAppAC>
   | ReturnType<typeof setErrorAppAC>
   | ReturnType<typeof setInitializedAC>;
 
-//Action Creator
+// Action Creator
 export const setStatusAppAC = (statusApp: RequestStatusType) => {
   return {
     type: 'APP/SET_STATUS',

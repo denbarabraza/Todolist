@@ -1,16 +1,18 @@
 import * as React from 'react';
-import Stack from '@mui/material/Stack';
-import Snackbar from '@mui/material/Snackbar';
+
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
-import { RootDispatch, useAppSelector } from '../../store/store';
+import Snackbar from '@mui/material/Snackbar';
+import Stack from '@mui/material/Stack';
+
 import { setErrorAppAC } from '../../app/appReducer';
+import { RootDispatch, useAppSelector } from '../../store/store';
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
 export const ErrorSnackbar = () => {
-  let errorApp = useAppSelector<string | null>(state => state.app.errorApp);
+  const errorApp = useAppSelector<string | null>(state => state.app.errorApp);
   const dispatch = RootDispatch();
 
   const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {

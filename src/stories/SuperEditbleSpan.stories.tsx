@@ -1,6 +1,8 @@
 import React from 'react';
-import { ComponentMeta, ComponentStory } from '@storybook/react';
+
 import { action } from '@storybook/addon-actions';
+import { ComponentMeta, ComponentStory } from '@storybook/react';
+
 import { SuperEditbleSpan } from '../common/components/SuperEditbleSpan';
 
 export default {

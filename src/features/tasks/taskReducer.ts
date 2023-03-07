@@ -1,11 +1,12 @@
-import { addNewTodoAC, removeTodoAC, setTodosAC } from '../todos/todoReducer';
-import { ResponseResult, taskAPI, TaskType, UpdateTaskModelType } from '../../api/api';
-import { Dispatch } from 'redux';
-import { RootStoreType } from '../../store/store';
-import { RequestStatusType, setErrorAppAC, setStatusAppAC } from '../../app/appReducer';
 import axios, { AxiosError } from 'axios';
+import { Dispatch } from 'redux';
 
-//Type
+import { ResponseResult, taskAPI, TaskType, UpdateTaskModelType } from '../../api/api';
+import { RequestStatusType, setErrorAppAC, setStatusAppAC } from '../../app/appReducer';
+import { RootStoreType } from '../../store/store';
+import { addNewTodoAC, removeTodoAC, setTodosAC } from '../todos/todoReducer';
+
+// Type
 export type FilterValueType = 'All' | 'Active' | 'Completed';
 
 type InTaskType = {
@@ -17,7 +18,7 @@ export type TaskCommonType = {
   [key: string]: InTaskType;
 };
 
-//State
+// State
 const initialState: TaskCommonType = {
   // [todolistId1]: {
   //     data: [
@@ -35,7 +36,7 @@ const initialState: TaskCommonType = {
   // }
 };
 
-//Reducer
+// Reducer
 export const taskReducer = (
   state = initialState,
   action: ActionsType,
@@ -82,8 +83,10 @@ export const taskReducer = (
       };
     }
     case 'REMOVE_TODO': {
-      let stateCopy = { ...state };
+      const stateCopy = { ...state };
+
       delete stateCopy[action.payload.todoID];
+
       return stateCopy;
     }
     case 'ADD_TODO': {
@@ -95,6 +98,7 @@ export const taskReducer = (
     case 'SET_TODO_FROM_BACK': {
       return action.payload.todos.reduce((res: TaskCommonType, t) => {
         res[t.id] = { data: [], filter: 'All', entityStatus: 'idle' };
+
         return res;
       }, {});
       // const copyState = {...state}
@@ -131,7 +135,7 @@ export const taskReducer = (
   }
 };
 
-//Action Type
+// Action Type
 type ActionsType =
   | ReturnType<typeof removeTaskAC>
   | ReturnType<typeof changeFilterValueAC>
@@ -143,7 +147,7 @@ type ActionsType =
   | ReturnType<typeof updateTasksAC>
   | ReturnType<typeof changeEntityStatusAC>;
 
-//Action Creator
+// Action Creator
 export const removeTaskAC = (todoID: string, taskID: string) => {
   return {
     type: 'REMOVE_TASK',
@@ -204,16 +208,18 @@ export const changeEntityStatusAC = (todoID: string, entityStatus: RequestStatus
   } as const;
 };
 
-//Thunk Creator
+// Thunk Creator
 export const setTasksTC = (todoID: string) => async (dispatch: Dispatch) => {
   dispatch(setStatusAppAC('loading'));
   try {
-    let res = await taskAPI.getTask(todoID);
+    const res = await taskAPI.getTask(todoID);
+
     dispatch(setTasksAC(todoID, res.items));
     dispatch(setStatusAppAC('succeeded'));
   } catch (e) {
     if (axios.isAxiosError<AxiosError<{ message: string }>>(e)) {
-      let err = e.response ? e.response?.data.message : e.message;
+      const err = e.response ? e.response?.data.message : e.message;
+
       dispatch(setErrorAppAC(err));
     }
     dispatch(setStatusAppAC('failed'));
@@ -221,25 +227,24 @@ export const setTasksTC = (todoID: string) => async (dispatch: Dispatch) => {
 };
 export const createTasksTC =
   (todoID: string, title: string) => async (dispatch: Dispatch) => {
-    debugger;
     dispatch(setStatusAppAC('loading'));
     dispatch(changeEntityStatusAC(todoID, 'loading'));
     try {
-      let res = await taskAPI.createTask(todoID, title);
+      const res = await taskAPI.createTask(todoID, title);
+
       if (res.resultCode === ResponseResult.OK) {
         dispatch(addTaskAC(todoID, res.data.item));
+      } else if (res.messages.length) {
+        dispatch(setErrorAppAC(res.messages[0]));
       } else {
-        if (res.messages.length) {
-          dispatch(setErrorAppAC(res.messages[0]));
-        } else {
-          dispatch(setErrorAppAC('Some error'));
-        }
+        dispatch(setErrorAppAC('Some error'));
       }
       dispatch(setStatusAppAC('succeeded'));
       dispatch(changeEntityStatusAC(todoID, 'succeeded'));
     } catch (e) {
       if (axios.isAxiosError<AxiosError<{ message: string }>>(e)) {
-        let err = e.response ? e.response?.data.message : e.message;
+        const err = e.response ? e.response?.data.message : e.message;
+
         dispatch(setErrorAppAC(err));
       }
       dispatch(setStatusAppAC('failed'));
@@ -251,13 +256,15 @@ export const removeTasksTC =
     dispatch(setStatusAppAC('loading'));
     dispatch(changeEntityStatusAC(todoID, 'loading'));
     try {
-      let res = await taskAPI.deleteTask(todoID, taskID);
+      const res = await taskAPI.deleteTask(todoID, taskID);
+
       dispatch(removeTaskAC(todoID, taskID));
       dispatch(setStatusAppAC('succeeded'));
       dispatch(changeEntityStatusAC(todoID, 'succeeded'));
     } catch (e) {
       if (axios.isAxiosError<AxiosError<{ message: string }>>(e)) {
-        let err = e.response ? e.response?.data.message : e.message;
+        const err = e.response ? e.response?.data.message : e.message;
+
         dispatch(setErrorAppAC(err));
       }
       dispatch(setStatusAppAC('failed'));
@@ -293,21 +300,21 @@ export const updateTaskTC =
       dispatch(setStatusAppAC('loading'));
       dispatch(changeEntityStatusAC(todoID, 'loading'));
       try {
-        let res = await taskAPI.updateTask(todoID, taskID, apiModel);
+        const res = await taskAPI.updateTask(todoID, taskID, apiModel);
+
         if (res.resultCode === ResponseResult.OK) {
           dispatch(updateTasksAC(todoID, taskID, apiModel));
+        } else if (res.messages.length) {
+          dispatch(setErrorAppAC(res.messages[0]));
         } else {
-          if (res.messages.length) {
-            dispatch(setErrorAppAC(res.messages[0]));
-          } else {
-            dispatch(setErrorAppAC('Some error'));
-          }
+          dispatch(setErrorAppAC('Some error'));
         }
         dispatch(setStatusAppAC('succeeded'));
         dispatch(changeEntityStatusAC(todoID, 'succeeded'));
       } catch (e) {
         if (axios.isAxiosError<AxiosError<{ message: string }>>(e)) {
-          let err = e.response ? e.response?.data.message : e.message;
+          const err = e.response ? e.response?.data.message : e.message;
+
           dispatch(setErrorAppAC(err));
         }
         dispatch(setStatusAppAC('failed'));
