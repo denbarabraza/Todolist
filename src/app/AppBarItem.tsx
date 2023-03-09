@@ -5,7 +5,6 @@ import AppBar from '@mui/material/AppBar';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
 
 import { logOutTC } from '../features/auth/authReducer';
 import { RootDispatch } from '../store/store';
@@ -18,13 +17,16 @@ const AppBarItem = () => {
   };
 
   return (
-    <AppBar position="static">
+    <AppBar position="static" style={{ position: 'relative' }}>
       <Toolbar>
         <IconButton edge="start" color="inherit" aria-label="menu">
           <Menu />
         </IconButton>
-        <Typography variant="h6">News</Typography>
-        <Button color="inherit" onClick={logOutHandler}>
+        <Button
+          color="inherit"
+          onClick={logOutHandler}
+          style={{ position: 'absolute', right: '17px' }}
+        >
           Log Out
         </Button>
       </Toolbar>

@@ -5,6 +5,7 @@ import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import { useSelector } from 'react-redux';
 
+import todo from '../../../../../assets/todo.png';
 import { TaskStatuses } from '../../api/api';
 import { InputItemForm } from '../../common/components/InputItemForm';
 import { SuperEditbleSpan } from '../../common/components/SuperEditbleSpan';
@@ -18,6 +19,7 @@ import {
   TaskCommonType,
 } from '../tasks/taskReducer';
 
+import s from './Todolist.module.scss';
 import { deleteTodoTC, updateTodoTC } from './todoReducer';
 
 type TodolistPropsType = {
@@ -64,6 +66,7 @@ export const Todolist: FC<TodolistPropsType> = memo(({ todoID, title }) => {
 
   return (
     <div>
+      <div className={s.todoIMG} style={{ backgroundImage: `url(${todo})` }} />
       <h3>
         <SuperEditbleSpan title={title} callback={setUpTodoTitle} />
         <IconButton
