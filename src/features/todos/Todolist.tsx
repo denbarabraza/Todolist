@@ -1,15 +1,10 @@
-import React, { FC, memo, useCallback, useEffect } from 'react';
+import React, { FC, memo, useCallback, useEffect, useState } from 'react';
 
-import Delete from '@mui/icons-material/Delete';
 import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
 import { useSelector } from 'react-redux';
 
-import todo from '../../../../../assets/todo.png';
-import { TaskStatuses } from '../../api/api';
-import { InputItemForm } from '../../common/components/InputItemForm';
-import { SuperEditbleSpan } from '../../common/components/SuperEditbleSpan';
-import { RootDispatch, RootStoreType } from '../../store/store';
+import { isClosingModal, setModalStatus } from '../../app/appReducer';
+import { ModalWrapper } from '../modal/ModalWrapper';
 import { Task } from '../tasks/Task';
 import {
   changeFilterValueAC,
@@ -19,8 +14,13 @@ import {
   TaskCommonType,
 } from '../tasks/taskReducer';
 
-import s from './Todolist.module.scss';
+import s from './Todolist.module.css';
 import { deleteTodoTC, updateTodoTC } from './todoReducer';
+
+import { TaskStatuses } from 'api/api';
+import todo from 'assets/todo.png';
+import { SuperEditbleSpan } from 'common/components/SuperEditbleSpan';
+import { RootDispatch, RootStoreType, useAppSelector } from 'store/store';
 
 type TodolistPropsType = {
   todoID: string;
@@ -28,12 +28,16 @@ type TodolistPropsType = {
 };
 
 export const Todolist: FC<TodolistPropsType> = memo(({ todoID, title }) => {
+  const [id, setId] = useState('');
+
   const task = useSelector<RootStoreType, TaskCommonType>(state => state.task);
+  const status = useAppSelector(state => state.app.modalStatus);
+  const isOpen = useAppSelector(state => state.app.isModalClosed);
   const dispatch = RootDispatch();
 
   useEffect(() => {
     dispatch(setTasksTC(todoID));
-  }, []);
+  }, [todoID]);
 
   const onClickSuperButtonHandler = useCallback(
     (filter: FilterValueType) => {
@@ -41,9 +45,19 @@ export const Todolist: FC<TodolistPropsType> = memo(({ todoID, title }) => {
     },
     [todoID],
   );
-  const onClickRemoveTodo = useCallback(() => {
-    dispatch(deleteTodoTC(todoID));
-  }, [todoID]);
+  const onClickRemoveTodo = useCallback(
+    (todoID: string) => {
+      dispatch(deleteTodoTC(todoID));
+      /* debugger;
+            setId(() => todoID);
+            dispatch(setModalStatus('Delete todo'));
+            dispatch(isClosingModal(false)); */
+    },
+    [todoID],
+  );
+
+  console.log(id);
+
   const addTaskHandler = useCallback(
     (value: string) => {
       dispatch(createTasksTC(todoID, value));
@@ -65,20 +79,34 @@ export const Todolist: FC<TodolistPropsType> = memo(({ todoID, title }) => {
   }
 
   return (
-    <div>
-      <div className={s.todoIMG} style={{ backgroundImage: `url(${todo})` }} />
-      <h3>
+    <div className={s.todoBlock}>
+      <div className={s.description}>
         <SuperEditbleSpan title={title} callback={setUpTodoTitle} />
-        <IconButton
-          aria-label="delete"
-          onClick={onClickRemoveTodo}
-          disabled={task[todoID].entityStatus === 'loading'}
-        >
-          <Delete />
-        </IconButton>
-      </h3>
+        <div className={s.todoIMG} style={{ backgroundImage: `url(${todo})` }} />
+      </div>
+      <div className={s.taskDescription}>Task count: {task[todoID].taskCount}</div>
 
-      <InputItemForm callback={addTaskHandler} entityStatus={task[todoID].entityStatus} />
+      <Button
+        variant="outlined"
+        onClick={() => {}}
+        color="primary"
+        size="small"
+        disabled={task[todoID].entityStatus === 'loading'}
+        style={{ margin: '5px 0' }}
+      >
+        Open
+      </Button>
+      <Button
+        variant="outlined"
+        onClick={() => onClickRemoveTodo(todoID)}
+        color="error"
+        size="small"
+        disabled={task[todoID].entityStatus === 'loading'}
+        style={{ margin: '5px 0' }}
+      >
+        Delete
+      </Button>
+      <ModalWrapper isOpen={isOpen} status={status} todoID={id} />
 
       <div>
         {filteredTask.map(t => (
@@ -91,7 +119,7 @@ export const Todolist: FC<TodolistPropsType> = memo(({ todoID, title }) => {
         ))}
       </div>
 
-      <Button
+      {/* <Button
         variant={task[todoID].filter === 'All' ? 'contained' : 'outlined'}
         onClick={() => onClickSuperButtonHandler('All')}
         color="primary"
@@ -117,7 +145,7 @@ export const Todolist: FC<TodolistPropsType> = memo(({ todoID, title }) => {
         style={{ margin: '1px' }}
       >
         Active
-      </Button>
+      </Button> */}
     </div>
   );
 });

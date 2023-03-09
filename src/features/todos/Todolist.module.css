@@ -1,0 +1,25 @@
+.todoBlock{
+    width: 25vh;
+    height: max-content;
+    display: flex;
+    flex-direction: column;
+
+}
+.description{
+    align-items: center;
+    justify-content: center;
+}
+
+.taskDescription{
+    height: 20px;
+    padding: 10px 5px;
+    color: rgba(0,0,0,0.5);
+}
+
+.todoIMG {
+    height: 10vh;
+    width: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}

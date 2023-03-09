@@ -1,19 +1,21 @@
 import React, { useEffect } from 'react';
 
-import '../common/styles/App.module.css';
 import CircularProgress from '@mui/material/CircularProgress';
 import Container from '@mui/material/Container';
 import LinearProgress from '@mui/material/LinearProgress';
 import { Navigate, Route, Routes } from 'react-router-dom';
 
-import { ErrorSnackbar } from '../common/components/ErrorSnackbar';
-import { initializeAppTC } from '../features/auth/authReducer';
-import { Login } from '../features/login/Login';
-import { TodolistItem } from '../features/todos/TodolistItem';
-import { RootDispatch, useAppSelector } from '../store/store';
+import Loader from '../common/components/Loader';
+import s from '../common/styles/App.module.css';
 
 import AppBarItem from './AppBarItem';
 import { RequestStatusType } from './appReducer';
+
+import { ErrorSnackbar } from 'common/components/ErrorSnackbar';
+import { initializeAppTC } from 'features/auth/authReducer';
+import { Login } from 'features/login/Login';
+import { TodolistItem } from 'features/todos/TodolistItem';
+import { RootDispatch, useAppSelector } from 'store/store';
 
 const App = () => {
   const status = useAppSelector<RequestStatusType>(state => state.app.statusApp);
@@ -35,8 +37,9 @@ const App = () => {
   return (
     <div>
       <AppBarItem />
-      {status === 'loading' && <LinearProgress />}
-      <Container maxWidth="xl">
+      {status === 'loading' && <Loader />}
+
+      <Container>
         <Routes>
           <Route path="/" element={<TodolistItem />} />
           <Route path="/login" element={<Login />} />

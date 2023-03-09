@@ -1,0 +1,32 @@
+.blockTodoItem {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.description {
+    color: rgba(0, 0, 0, 0.5);
+    padding: 10px 0;
+}
+
+h3 {
+    margin: 0;
+}
+
+.todoIMG {
+    height: 10vh;
+    width: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    margin-top: 10px;
+}
+
+.buttonBlock {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    margin-top: 10px;
+}

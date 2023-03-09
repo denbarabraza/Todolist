@@ -12,6 +12,7 @@ export type FilterValueType = 'All' | 'Active' | 'Completed';
 type InTaskType = {
   data: TaskType[];
   filter: FilterValueType;
+  taskCount: number;
   entityStatus: RequestStatusType;
 };
 export type TaskCommonType = {
@@ -91,25 +92,21 @@ export const taskReducer = (
     }
     case 'ADD_TODO': {
       return {
-        [action.payload.newTodo.id]: { data: [], filter: 'All', entityStatus: 'idle' },
+        [action.payload.newTodo.id]: {
+          data: [],
+          filter: 'All',
+          entityStatus: 'idle',
+          taskCount: 0,
+        },
         ...state,
       };
     }
     case 'SET_TODO_FROM_BACK': {
       return action.payload.todos.reduce((res: TaskCommonType, t) => {
-        res[t.id] = { data: [], filter: 'All', entityStatus: 'idle' };
+        res[t.id] = { data: [], filter: 'All', entityStatus: 'idle', taskCount: 0 };
 
         return res;
       }, {});
-      // const copyState = {...state}
-      // const todoID = action.payload.todos.map(e => e.id)
-      // todoID.forEach((t) => {
-      //     copyState[t] = {
-      //         data: [],
-      //         filter: 'All'
-      //     }
-      // })
-      // return copyState
     }
     case 'SET_TASKS_FROM_BACK': {
       return {
@@ -118,6 +115,7 @@ export const taskReducer = (
           ...state[action.payload.todoID],
           data: action.payload.tasks,
           filter: 'All',
+          taskCount: action.payload.taskCount,
         },
       };
     }
@@ -175,12 +173,13 @@ export const addTaskAC = (todoID: string, task: TaskType) => {
     },
   } as const;
 };
-export const setTasksAC = (todoID: string, tasks: TaskType[]) => {
+export const setTasksAC = (todoID: string, tasks: TaskType[], taskCount: number) => {
   return {
     type: 'SET_TASKS_FROM_BACK',
     payload: {
       todoID,
       tasks,
+      taskCount,
     },
   } as const;
 };
@@ -214,7 +213,7 @@ export const setTasksTC = (todoID: string) => async (dispatch: Dispatch) => {
   try {
     const res = await taskAPI.getTask(todoID);
 
-    dispatch(setTasksAC(todoID, res.items));
+    dispatch(setTasksAC(todoID, res.items, res.totalCount));
     dispatch(setStatusAppAC('succeeded'));
   } catch (e) {
     if (axios.isAxiosError<AxiosError<{ message: string }>>(e)) {

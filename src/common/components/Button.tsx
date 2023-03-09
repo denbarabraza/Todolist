@@ -1,8 +1,8 @@
 import React, { memo } from 'react';
 
-import { FilterValueType } from '../../features/tasks/taskReducer';
-// @ts-ignore
 import s from '../styles/Styles.module.css';
+
+import { FilterValueType } from 'features/tasks/taskReducer';
 
 type ButtonPropsType = {
   title: string;

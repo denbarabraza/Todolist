@@ -2,6 +2,8 @@ import React, { ChangeEvent, FC, memo, useState } from 'react';
 
 import TextField from '@mui/material/TextField';
 
+import s from 'common/styles/SuperEditbleSpan.module.css';
+
 type SuperEditbleSpanPropsType = {
   title: string;
   callback: (upValue: string) => void;
@@ -25,16 +27,20 @@ export const SuperEditbleSpan: FC<SuperEditbleSpanPropsType> = memo(
       setValue(e.currentTarget.value);
     };
 
-    return edit ? (
-      <TextField
-        value={upValue}
-        onChange={onChangeInputHandler}
-        onBlur={onDoubleClickHandler}
-        autoFocus
-        size="small"
-      />
-    ) : (
-      <span onDoubleClick={onDoubleClickHandler}>{title}</span>
+    return (
+      <div className={s.editableItem}>
+        {edit ? (
+          <TextField
+            value={upValue}
+            onChange={onChangeInputHandler}
+            onBlur={onDoubleClickHandler}
+            autoFocus
+            size="small"
+          />
+        ) : (
+          <span onDoubleClick={onDoubleClickHandler}>{title}</span>
+        )}
+      </div>
     );
   },
 );
