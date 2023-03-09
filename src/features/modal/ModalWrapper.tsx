@@ -18,7 +18,6 @@ type ModalWrapperType = {
 
 export const ModalWrapper: FC<ModalWrapperType> = memo(
   ({ isOpen, status, todoID, name }) => {
-    debugger;
     const dispatch = RootDispatch();
 
     useEffect(() => {}, [todoID]);
@@ -35,6 +34,7 @@ export const ModalWrapper: FC<ModalWrapperType> = memo(
         title="Delete TODO"
         close={onClickHandlerClosedModal}
         todoID={todoID}
+        name={name}
       />
     );
     const form = addTodo || deleteTodo || null;

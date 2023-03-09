@@ -29,6 +29,7 @@ type TodolistPropsType = {
 
 export const Todolist: FC<TodolistPropsType> = memo(({ todoID, title }) => {
   const [id, setId] = useState('');
+  const [name, setName] = useState('');
 
   const task = useSelector<RootStoreType, TaskCommonType>(state => state.task);
   const status = useAppSelector(state => state.app.modalStatus);
@@ -37,6 +38,8 @@ export const Todolist: FC<TodolistPropsType> = memo(({ todoID, title }) => {
 
   useEffect(() => {
     dispatch(setTasksTC(todoID));
+    setId('');
+    setName('');
   }, [todoID]);
 
   const onClickSuperButtonHandler = useCallback(
@@ -46,17 +49,17 @@ export const Todolist: FC<TodolistPropsType> = memo(({ todoID, title }) => {
     [todoID],
   );
   const onClickRemoveTodo = useCallback(
-    (todoID: string) => {
-      dispatch(deleteTodoTC(todoID));
-      /* debugger;
-            setId(() => todoID);
-            dispatch(setModalStatus('Delete todo'));
-            dispatch(isClosingModal(false)); */
+    (todoID: string, title: string) => {
+      setId(todoID);
+      setName(title);
+      dispatch(setModalStatus('Delete todo'));
+      dispatch(isClosingModal(false));
+      /* dispatch(deleteTodoTC(todoID)); */
+
+      /*  */
     },
     [todoID],
   );
-
-  console.log(id);
 
   const addTaskHandler = useCallback(
     (value: string) => {
@@ -98,7 +101,7 @@ export const Todolist: FC<TodolistPropsType> = memo(({ todoID, title }) => {
       </Button>
       <Button
         variant="outlined"
-        onClick={() => onClickRemoveTodo(todoID)}
+        onClick={() => onClickRemoveTodo(todoID, title)}
         color="error"
         size="small"
         disabled={task[todoID].entityStatus === 'loading'}
@@ -106,9 +109,9 @@ export const Todolist: FC<TodolistPropsType> = memo(({ todoID, title }) => {
       >
         Delete
       </Button>
-      <ModalWrapper isOpen={isOpen} status={status} todoID={id} />
+      <ModalWrapper isOpen={isOpen} status={status} todoID={id} name={name} />
 
-      <div>
+      {/* <div>
         {filteredTask.map(t => (
           <Task
             key={t.id}
@@ -117,7 +120,7 @@ export const Todolist: FC<TodolistPropsType> = memo(({ todoID, title }) => {
             disabled={task[todoID].entityStatus === 'loading'}
           />
         ))}
-      </div>
+      </div> */}
 
       {/* <Button
         variant={task[todoID].filter === 'All' ? 'contained' : 'outlined'}

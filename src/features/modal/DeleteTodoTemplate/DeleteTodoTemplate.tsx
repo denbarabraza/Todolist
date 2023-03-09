@@ -3,39 +3,37 @@ import React, { FC, memo, useCallback, useEffect } from 'react';
 import Button from '@mui/material/Button';
 
 import s from '../../../common/styles/TodoItem.module.css';
-import { RootDispatch } from '../../../store/store';
+import { RootDispatch, useAppSelector } from '../../../store/store';
 import { deleteTodoTC } from '../../todos/todoReducer';
 
 type DeleteTodoTemplateType = {
   title: string;
   close: () => void;
   todoID: string | undefined;
+  name?: string;
 };
 
 export const DeleteTodoTemplate: FC<DeleteTodoTemplateType> = memo(
-  ({ title, close, todoID }) => {
+  ({ title, close, todoID, name }) => {
     const dispatch = RootDispatch();
-    /* const name = useAppSelector(state =>
-                              state.todolist.find(e => (e.id === todoID ? e.title : 'Unknown')),
-                            ); */
 
     const onClickRemoveTodo = useCallback(() => {
-      debugger;
       if (todoID) {
         debugger;
         dispatch(deleteTodoTC(todoID));
       }
-    }, [todoID]);
+    }, []);
 
     useEffect(() => {
       if (!todoID) return;
-    }, []);
+      console.log(todoID, name);
+    }, [todoID]);
 
     return (
       <div className={s.blockTodoItem}>
         <h3>{title}</h3>
         <div className={s.description}>
-          Do you really want to remove name? All tasks will be deleted.
+          Do you really want to remove <b>{name}</b>? All tasks will be deleted.
         </div>
         <div className={s.buttonBlock}>
           <Button
