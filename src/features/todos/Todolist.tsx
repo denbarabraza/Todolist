@@ -22,7 +22,7 @@ import { RootDispatch, RootStoreType } from 'store/store';
 type TodolistPropsType = {
   todoID: string;
   title: string;
-  onClickRemoveTodo: (todoID: string) => void;
+  onClickRemoveTodo: (todoID: string, title: string) => void;
 };
 
 export const Todolist: FC<TodolistPropsType> = memo(
@@ -36,7 +36,7 @@ export const Todolist: FC<TodolistPropsType> = memo(
     }, []);
 
     const onClickRemoveTodoHandler = () => {
-      onClickRemoveTodo(todoID);
+      onClickRemoveTodo(todoID, title);
     };
 
     const onClickSuperButtonHandler = useCallback(

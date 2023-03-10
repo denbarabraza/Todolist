@@ -17,6 +17,7 @@ import { RootDispatch, RootStoreType, useAppSelector } from 'store/store';
 
 export const TodolistItem = () => {
   const [id, setId] = useState('');
+  const [name, setName] = useState('');
 
   const todolist = useSelector<RootStoreType, TodoType[]>(state => state.todolist);
   const status = useAppSelector(state => state.app.modalStatus);
@@ -39,8 +40,9 @@ export const TodolistItem = () => {
   }, []);
 
   const onClickRemoveTodo = useCallback(
-    (todoID: string) => {
+    (todoID: string, title: string) => {
       setId(todoID);
+      setName(title);
       dispatch(setModalStatus('Delete todo'));
       dispatch(isClosingModal(false));
     },
@@ -86,7 +88,7 @@ export const TodolistItem = () => {
           );
         })}
       </Grid>
-      <ModalWrapper isOpen={isOpen} status={status} todoID={id} />
+      <ModalWrapper isOpen={isOpen} status={status} todoID={id} name={name} />
     </>
   );
 };
