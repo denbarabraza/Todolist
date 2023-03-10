@@ -15,6 +15,7 @@ import s from './Todolist.module.css';
 import { updateTodoTC } from './todoReducer';
 
 import { TaskStatuses } from 'api/api';
+import countTask from 'assets/countTask.png';
 import todo from 'assets/todo.png';
 import { SuperEditbleSpan } from 'common/components/SuperEditbleSpan';
 import { RootDispatch, RootStoreType } from 'store/store';
@@ -72,7 +73,15 @@ export const Todolist: FC<TodolistPropsType> = memo(
           <SuperEditbleSpan title={title} callback={setUpTodoTitle} />
           <div className={s.todoIMG} style={{ backgroundImage: `url(${todo})` }} />
         </div>
-        <div className={s.taskDescription}>Task count: {task[todoID].taskCount}</div>
+        <div className={s.taskDescription}>
+          <img
+            src={countTask}
+            alt="Task count"
+            title="Task count"
+            className={s.countTask}
+          />
+          <span>{task[todoID].taskCount}</span>
+        </div>
 
         <Button
           variant="outlined"
