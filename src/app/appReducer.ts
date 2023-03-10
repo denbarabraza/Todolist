@@ -1,6 +1,6 @@
 export type RequestStatusType = 'idle' | 'loading' | 'succeeded' | 'failed';
 
-export type StatusTodoModal = 'Add todo' | 'Delete todo';
+export type StatusTodoModal = 'Add todo' | 'Delete todo' | 'Open todo';
 export type ModalStatus = 'idle' | StatusTodoModal;
 
 type AppReducerType = {

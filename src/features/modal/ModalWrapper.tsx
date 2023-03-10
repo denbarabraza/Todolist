@@ -1,4 +1,4 @@
-import React, { FC, memo } from 'react';
+import React, { FC, memo, useEffect } from 'react';
 
 import { ModalStatus } from '../../app/appReducer';
 import { resetModalValue } from '../../common/utils/resetModalValue';
@@ -7,17 +7,19 @@ import { RootDispatch } from '../../store/store';
 import { AddTodoTemplate } from './AddTodoTemplate/AddTodoTemplate';
 import { DeleteTodoTemplate } from './DeleteTodoTemplate/DeleteTodoTemplate';
 import { Modal } from './Modal';
+import { OpenTodoTemplate } from './OpenTodoTemplate/OpenTodoTemplate';
 
 type ModalWrapperType = {
   className?: string;
   isOpen: boolean;
   status: ModalStatus;
-  todoID?: string;
+  todoID: string | undefined;
   name?: string;
 };
 
 export const ModalWrapper: FC<ModalWrapperType> = memo(
   ({ isOpen, status, todoID, name }) => {
+    console.log(todoID);
     const dispatch = RootDispatch();
 
     const onClickHandlerClosedModal = () => {
@@ -35,7 +37,11 @@ export const ModalWrapper: FC<ModalWrapperType> = memo(
         name={name}
       />
     );
-    const form = addTodo || deleteTodo || null;
+    const openTodo = status === 'Open todo' && (
+      <OpenTodoTemplate close={onClickHandlerClosedModal} todoID={todoID} />
+    );
+
+    const form = addTodo || deleteTodo || openTodo || null;
 
     return (
       <Modal isOpen={isOpen} onClose={onClickHandlerClosedModal}>

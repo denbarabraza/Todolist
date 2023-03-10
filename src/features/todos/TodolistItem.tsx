@@ -49,6 +49,15 @@ export const TodolistItem = () => {
     [id],
   );
 
+  const onClickOpenTodo = useCallback(
+    (todoID: string) => {
+      setId(todoID);
+      dispatch(setModalStatus('Open todo'));
+      dispatch(isClosingModal(false));
+    },
+    [id],
+  );
+
   if (!isLoggedIn) {
     return <Navigate to="/login" />;
   }
@@ -82,6 +91,7 @@ export const TodolistItem = () => {
                   todoID={t.id}
                   title={t.title}
                   onClickRemoveTodo={onClickRemoveTodo}
+                  onClickOpenTodo={onClickOpenTodo}
                 />
               </Paper>
             </Grid>
