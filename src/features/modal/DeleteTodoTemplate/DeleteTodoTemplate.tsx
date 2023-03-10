@@ -3,7 +3,8 @@ import React, { FC, memo, useCallback, useEffect } from 'react';
 import Button from '@mui/material/Button';
 
 import s from '../../../common/styles/TodoItem.module.css';
-import { RootDispatch, useAppSelector } from '../../../store/store';
+import { resetModalValue } from '../../../common/utils/resetModalValue';
+import { RootDispatch } from '../../../store/store';
 import { deleteTodoTC } from '../../todos/todoReducer';
 
 type DeleteTodoTemplateType = {
@@ -19,14 +20,13 @@ export const DeleteTodoTemplate: FC<DeleteTodoTemplateType> = memo(
 
     const onClickRemoveTodo = useCallback(() => {
       if (todoID) {
-        debugger;
         dispatch(deleteTodoTC(todoID));
+        resetModalValue(dispatch);
       }
     }, []);
 
     useEffect(() => {
       if (!todoID) return;
-      console.log(todoID, name);
     }, [todoID]);
 
     return (

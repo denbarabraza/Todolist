@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
@@ -16,7 +16,11 @@ import { TodoType } from 'api/api';
 import { RootDispatch, RootStoreType, useAppSelector } from 'store/store';
 
 export const TodolistItem = () => {
+  const [id, setId] = useState('');
+
   const todolist = useSelector<RootStoreType, TodoType[]>(state => state.todolist);
+  const status = useAppSelector(state => state.app.modalStatus);
+  const isOpen = useAppSelector(state => state.app.isModalClosed);
   const isLoggedIn = useAppSelector<boolean>(state => state.auth.isLoggedIn);
   const dispatch = RootDispatch();
 
@@ -25,10 +29,23 @@ export const TodolistItem = () => {
     dispatch(setTodosTC());
   }, []);
 
+  useEffect(() => {
+    setId('');
+  }, [isOpen]);
+
   const addNewTodoModal = useCallback(() => {
     dispatch(setModalStatus('Add todo'));
     dispatch(isClosingModal(false));
   }, []);
+
+  const onClickRemoveTodo = useCallback(
+    (todoID: string) => {
+      setId(todoID);
+      dispatch(setModalStatus('Delete todo'));
+      dispatch(isClosingModal(false));
+    },
+    [id],
+  );
 
   if (!isLoggedIn) {
     return <Navigate to="/login" />;
@@ -59,12 +76,17 @@ export const TodolistItem = () => {
           return (
             <Grid item key={t.id}>
               <Paper style={{ padding: '10px' }} elevation={3}>
-                <Todolist todoID={t.id} title={t.title} />
+                <Todolist
+                  todoID={t.id}
+                  title={t.title}
+                  onClickRemoveTodo={onClickRemoveTodo}
+                />
               </Paper>
             </Grid>
           );
         })}
       </Grid>
+      <ModalWrapper isOpen={isOpen} status={status} todoID={id} />
     </>
   );
 };

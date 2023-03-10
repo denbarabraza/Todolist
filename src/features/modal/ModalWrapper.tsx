@@ -1,4 +1,4 @@
-import React, { FC, memo, useEffect } from 'react';
+import React, { FC, memo } from 'react';
 
 import { ModalStatus } from '../../app/appReducer';
 import { resetModalValue } from '../../common/utils/resetModalValue';
@@ -19,8 +19,6 @@ type ModalWrapperType = {
 export const ModalWrapper: FC<ModalWrapperType> = memo(
   ({ isOpen, status, todoID, name }) => {
     const dispatch = RootDispatch();
-
-    useEffect(() => {}, [todoID]);
 
     const onClickHandlerClosedModal = () => {
       resetModalValue(dispatch);

@@ -1,13 +1,10 @@
 import React, { ChangeEvent, KeyboardEvent, memo, useState } from 'react';
 
-import { AddBox } from '@mui/icons-material';
 import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
 import TextField from '@mui/material/TextField';
 
 import { RequestStatusType } from '../../app/appReducer';
 import { RootDispatch } from '../../store/store';
-import { resetModalValue } from '../utils/resetModalValue';
 
 import s from 'common/styles/InputItemForm.module.css';
 
@@ -18,9 +15,7 @@ type InputItemFormPropsType = {
 };
 
 export const InputItemForm: React.FC<InputItemFormPropsType> = memo(
-  ({ callback, entityStatus, close }) => {
-    const dispatch = RootDispatch();
-
+  ({ callback, close }) => {
     const [value, setValue] = useState('');
     const [error, setError] = useState<null | string>(null);
 
@@ -37,7 +32,6 @@ export const InputItemForm: React.FC<InputItemFormPropsType> = memo(
       if (value.trim() !== '') {
         callback(value.trim());
         setValue('');
-        resetModalValue(dispatch);
       } else {
         setError('Enter your value');
       }

@@ -1,6 +1,7 @@
 import React, { FC, memo, useCallback } from 'react';
 
 import todo from '../../../assets/todo.png';
+import { resetModalValue } from '../../../common/utils/resetModalValue';
 import { createTodoTC } from '../../todos/todoReducer';
 
 import { InputItemForm } from 'common/components/InputItemForm';
@@ -17,6 +18,7 @@ export const AddTodoTemplate: FC<AddTodoType> = memo(({ title, close }) => {
 
   const addNewTodo = useCallback((value: string) => {
     dispatch(createTodoTC(value));
+    resetModalValue(dispatch);
   }, []);
 
   return (
