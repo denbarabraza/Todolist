@@ -27,6 +27,9 @@ export const todoReducer = (state = initialState, action: ActionsType): TodoType
     case 'SET_TODO_FROM_BACK': {
       return [...action.payload.todos, ...state];
     }
+    case 'RESET_TODO': {
+      return initialState;
+    }
     default:
       return state;
   }
@@ -36,7 +39,8 @@ type ActionsType =
   | ReturnType<typeof removeTodoAC>
   | ReturnType<typeof addNewTodoAC>
   | ReturnType<typeof setUpTodoTitleAC>
-  | ReturnType<typeof setTodosAC>;
+  | ReturnType<typeof setTodosAC>
+  | ReturnType<typeof resetTodoAC>;
 
 export const removeTodoAC = (todoID: string) => {
   return {
@@ -69,6 +73,11 @@ export const setTodosAC = (todos: TodoType[]) => {
     payload: {
       todos,
     },
+  } as const;
+};
+export const resetTodoAC = () => {
+  return {
+    type: 'RESET_TODO',
   } as const;
 };
 
@@ -116,7 +125,7 @@ export const deleteTodoTC = (todoID: string) => (dispatch: Dispatch) => {
   dispatch(setStatusAppAC('loading'));
   todoAPI
     .deleteTodo(todoID)
-    .then(res => {
+    .then(() => {
       dispatch(removeTodoAC(todoID));
       dispatch(setStatusAppAC('succeeded'));
       dispatch(changeEntityStatusAC(todoID, 'succeeded'));

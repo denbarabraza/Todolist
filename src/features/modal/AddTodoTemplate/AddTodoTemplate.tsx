@@ -26,7 +26,7 @@ export const AddTodoTemplate: FC<AddTodoType> = memo(({ title, close }) => {
       <h3>{title}</h3>
       <div className={s.todoIMG} style={{ backgroundImage: `url(${todo})` }} />
       <div className={s.description}>Please enter the title</div>
-      <InputItemForm callback={addNewTodo} close={close} />
+      <InputItemForm callback={addNewTodo} close={close} status="Add todo" />
     </div>
   );
 });

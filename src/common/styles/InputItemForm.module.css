@@ -13,3 +13,12 @@
     justify-content: space-around;
     margin-top: 20px;
 }
+
+.inputItemWithButton {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}

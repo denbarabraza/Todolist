@@ -1,0 +1,13 @@
+.openingTodoBlock {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.buttonBlock{
+    margin-top: 20px;
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-around;
+}

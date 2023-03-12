@@ -2,11 +2,9 @@ import React, { useEffect } from 'react';
 
 import CircularProgress from '@mui/material/CircularProgress';
 import Container from '@mui/material/Container';
-import LinearProgress from '@mui/material/LinearProgress';
 import { Navigate, Route, Routes } from 'react-router-dom';
 
 import Loader from '../common/components/Loader';
-import s from '../common/styles/App.module.css';
 
 import AppBarItem from './AppBarItem';
 import { RequestStatusType } from './appReducer';

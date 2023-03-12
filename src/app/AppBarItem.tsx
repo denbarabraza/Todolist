@@ -1,36 +1,51 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { Menu } from '@mui/icons-material';
 import AppBar from '@mui/material/AppBar';
-import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import Toolbar from '@mui/material/Toolbar';
+import { useSelector } from 'react-redux';
 
+import s from '../common/styles/AppBarItem.module.css';
 import { logOutTC } from '../features/auth/authReducer';
-import { RootDispatch } from '../store/store';
+import { RootDispatch, RootStoreType, useAppSelector } from '../store/store';
+
+import logout from 'assets/logout.png';
 
 const AppBarItem = () => {
+  const loginName = useSelector<RootStoreType, string>(state => state.auth.loginName);
+  const isLoggedIn = useAppSelector<boolean>(state => state.auth.isLoggedIn);
   const dispatch = RootDispatch();
 
   const logOutHandler = () => {
     dispatch(logOutTC());
   };
 
+  useEffect(() => {}, [isLoggedIn]);
+
   return (
-    <AppBar position="static" style={{ position: 'relative' }}>
-      <Toolbar>
-        <IconButton edge="start" color="inherit" aria-label="menu">
-          <Menu />
-        </IconButton>
-        <Button
-          color="inherit"
-          onClick={logOutHandler}
-          style={{ position: 'absolute', right: '17px' }}
-        >
-          Log Out
-        </Button>
-      </Toolbar>
-    </AppBar>
+    <div>
+      <AppBar position="static" style={{ position: 'relative' }}>
+        <Toolbar>
+          {isLoggedIn && (
+            <div className={s.toolbarBlock}>
+              <IconButton edge="start" color="inherit" aria-label="menu">
+                <Menu />
+              </IconButton>
+              <div className={s.loginBlock}>
+                <div className={s.loginName}>{loginName}</div>
+                <img
+                  src={logout}
+                  alt=""
+                  onClick={logOutHandler}
+                  className={s.imgLogOut}
+                />
+              </div>
+            </div>
+          )}
+        </Toolbar>
+      </AppBar>
+    </div>
   );
 };
 

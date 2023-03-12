@@ -1,4 +1,6 @@
-import React, { FC, memo, useEffect } from 'react';
+import React, { FC, memo } from 'react';
+
+import { useNavigate } from 'react-router-dom';
 
 import { ModalStatus } from '../../app/appReducer';
 import { resetModalValue } from '../../common/utils/resetModalValue';
@@ -19,11 +21,13 @@ type ModalWrapperType = {
 
 export const ModalWrapper: FC<ModalWrapperType> = memo(
   ({ isOpen, status, todoID, name }) => {
-    console.log(todoID);
+    const navigate = useNavigate();
     const dispatch = RootDispatch();
 
     const onClickHandlerClosedModal = () => {
       resetModalValue(dispatch);
+
+      return () => navigate(-1);
     };
 
     const addTodo = status === 'Add todo' && (

@@ -1,0 +1,27 @@
+.imgLogOut {
+    width: 37px;
+    height: 37px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.imgLogOut:hover {
+    width: 38px;
+    height: 38px;
+}
+
+.toolbarBlock {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+.loginBlock {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}

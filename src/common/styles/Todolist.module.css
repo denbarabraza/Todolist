@@ -1,7 +1,46 @@
-.textError {
-  color: red;
-}
-.inputError {
-  border: 1px solid red;
+.todoBlock {
+    width: 25vh;
+    height: max-content;
+    display: flex;
+    flex-direction: column;
+
 }
 
+.description {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.taskDescription {
+    height: 20px;
+    padding: 10px 5px;
+    color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.todoIMG {
+    height: 10vh;
+    width: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    margin-top: 20px;
+}
+
+.countTask {
+    width: 25px;
+    height: 25px;
+}
+
+.textError {
+    color: red;
+}
+
+.inputError {
+    border: 1px solid red;
+}

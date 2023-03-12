@@ -3,9 +3,9 @@ import React, { FC, memo, useCallback, useEffect } from 'react';
 import Button from '@mui/material/Button';
 import { useSelector } from 'react-redux';
 
+import s from '../../common/styles/Todolist.module.css';
 import { setTasksTC, TaskCommonType } from '../tasks/taskReducer';
 
-import s from './Todolist.module.css';
 import { updateTodoTC } from './todoReducer';
 
 import countTask from 'assets/countTask.png';
@@ -29,6 +29,8 @@ export const Todolist: FC<TodolistPropsType> = memo(
     useEffect(() => {
       dispatch(setTasksTC(todoID));
     }, []);
+
+    useEffect(() => {}, [task[todoID]]);
 
     const onClickRemoveTodoHandler = () => {
       onClickRemoveTodo(todoID, title);
@@ -56,7 +58,6 @@ export const Todolist: FC<TodolistPropsType> = memo(
           />
           <span>{task[todoID].taskCount}</span>
         </div>
-
         <Button
           variant="outlined"
           onClick={onClickOpenTodoHandler}

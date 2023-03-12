@@ -9,6 +9,8 @@ import { RootDispatch } from '../../store/store';
 
 import { removeTasksTC, updateTaskTC } from './taskReducer';
 
+import s from 'common/styles/TaskItem.module.css';
+
 type TaskPropsType = {
   task: TaskType;
   todoID: string;
@@ -35,21 +37,24 @@ export const Task: React.FC<TaskPropsType> = memo(({ task, todoID, disabled }) =
   );
 
   return (
-    <div key={task.id}>
-      <input
-        type="checkbox"
-        checked={task.status === TaskStatuses.Completed}
-        onChange={e =>
-          onChangeTaskStatus(
-            task.id,
-            e.currentTarget.checked ? TaskStatuses.Completed : TaskStatuses.New,
-          )
-        }
-      />
-      <SuperEditbleSpan
-        title={task.title}
-        callback={upValue => setUpTasksTitle(upValue)}
-      />
+    <div key={task.id} className={s.taskItem}>
+      <div className={s.taskInfo}>
+        <input
+          type="checkbox"
+          checked={task.status === TaskStatuses.Completed}
+          onChange={e =>
+            onChangeTaskStatus(
+              task.id,
+              e.currentTarget.checked ? TaskStatuses.Completed : TaskStatuses.New,
+            )
+          }
+        />
+        <SuperEditbleSpan
+          title={task.title}
+          callback={upValue => setUpTasksTitle(upValue)}
+        />
+      </div>
+
       <IconButton aria-label="delete" onClick={onClickRemoveTask} disabled={disabled}>
         <Delete />
       </IconButton>

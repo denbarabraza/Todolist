@@ -27,12 +27,11 @@ export const TodolistItem = () => {
 
   useEffect(() => {
     if (!isLoggedIn) return;
-    dispatch(setTodosTC());
+    if (isOpen) {
+      setId('');
+      dispatch(setTodosTC());
+    }
   }, []);
-
-  useEffect(() => {
-    setId('');
-  }, [isOpen]);
 
   const addNewTodoModal = useCallback(() => {
     dispatch(setModalStatus('Add todo'));
@@ -41,8 +40,10 @@ export const TodolistItem = () => {
 
   const onClickRemoveTodo = useCallback(
     (todoID: string, title: string) => {
-      setId(todoID);
-      setName(title);
+      if (todoID.trim().length > 0) {
+        setId(todoID);
+        setName(title);
+      }
       dispatch(setModalStatus('Delete todo'));
       dispatch(isClosingModal(false));
     },

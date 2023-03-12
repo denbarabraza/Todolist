@@ -3,9 +3,11 @@ import { Dispatch } from 'redux';
 
 import { authAPI, LoginDataType, ResponseResult } from '../../api/api';
 import { setErrorAppAC, setInitializedAC, setStatusAppAC } from '../../app/appReducer';
+import { resetTodoAC } from '../todos/todoReducer';
 
 const InitialStateAuth = {
   isLoggedIn: false,
+  loginName: '',
 };
 
 export const authReducer = (
@@ -15,6 +17,8 @@ export const authReducer = (
   switch (action.type) {
     case 'auth/SET-IS-LOGGED-IN':
       return { ...state, isLoggedIn: action.payload.isLoggedIn };
+    case 'auth/SET-LOGIN_NAME':
+      return { ...state, loginName: action.payload.loginName };
     default:
       return state;
   }
@@ -26,6 +30,14 @@ export const setLoggedInAC = (isLoggedIn: boolean) => {
     type: 'auth/SET-IS-LOGGED-IN',
     payload: {
       isLoggedIn,
+    },
+  } as const;
+};
+export const setLoginName = (loginName: string) => {
+  return {
+    type: 'auth/SET-LOGIN_NAME',
+    payload: {
+      loginName,
     },
   } as const;
 };
@@ -62,6 +74,7 @@ export const initializeAppTC = () => async (dispatch: Dispatch) => {
     const res = await authAPI.me();
 
     if (res.resultCode === ResponseResult.OK) {
+      dispatch(setLoginName(res.data.login));
       dispatch(setLoggedInAC(true));
       dispatch(setStatusAppAC('succeeded'));
     } else {
@@ -86,6 +99,7 @@ export const initializeAppTC = () => async (dispatch: Dispatch) => {
 
 export const logOutTC = () => async (dispatch: Dispatch) => {
   dispatch(setStatusAppAC('loading'));
+  dispatch(resetTodoAC());
   try {
     const res = await authAPI.logOUT();
 
@@ -113,5 +127,6 @@ export const logOutTC = () => async (dispatch: Dispatch) => {
 // types
 type InitialStateAuthType = {
   isLoggedIn: boolean;
+  loginName: string;
 };
-type ActionsType = ReturnType<typeof setLoggedInAC>;
+type ActionsType = ReturnType<typeof setLoggedInAC> | ReturnType<typeof setLoginName>;

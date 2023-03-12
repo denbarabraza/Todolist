@@ -4,6 +4,7 @@ import Button from '@mui/material/Button';
 import { useSelector } from 'react-redux';
 
 import { TaskStatuses } from '../../../api/api';
+import { InputItemForm } from '../../../common/components/InputItemForm';
 import { RootDispatch, RootStoreType } from '../../../store/store';
 import { Task } from '../../tasks/Task';
 import {
@@ -12,6 +13,8 @@ import {
   FilterValueType,
   TaskCommonType,
 } from '../../tasks/taskReducer';
+
+import s from 'common/styles/OpenTodoTemplate.module.css';
 
 type OpenTodoTemplateType = {
   close: () => void;
@@ -31,7 +34,7 @@ export const OpenTodoTemplate: FC<OpenTodoTemplateType> = memo(({ close, todoID 
     [todoID],
   );
 
-  const addTaskHandler = useCallback(
+  const addNewTask = useCallback(
     (value: string) => {
       if (todoID) {
         dispatch(createTasksTC(todoID, value));
@@ -55,10 +58,13 @@ export const OpenTodoTemplate: FC<OpenTodoTemplateType> = memo(({ close, todoID 
 
   useEffect(() => {
     if (!todoID) return;
-  }, [todoID]);
+  }, []);
+
+  console.log(todoID);
 
   return (
-    <>
+    <div className={s.openingTodoBlock}>
+      <InputItemForm callback={addNewTask} close={close} status="Add task" />
       <div>
         {filteredTask &&
           todoID &&
@@ -71,34 +77,37 @@ export const OpenTodoTemplate: FC<OpenTodoTemplateType> = memo(({ close, todoID 
             />
           ))}
       </div>
-      Hi
-      <Button
-        variant={todoID && task[todoID].filter === 'All' ? 'contained' : 'outlined'}
-        onClick={() => onClickSuperButtonHandler('All')}
-        color="primary"
-        size="small"
-        style={{ margin: '1px' }}
-      >
-        All
-      </Button>
-      <Button
-        variant={todoID && task[todoID].filter === 'Completed' ? 'contained' : 'outlined'}
-        onClick={() => onClickSuperButtonHandler('Completed')}
-        color="primary"
-        size="small"
-        style={{ margin: '1px' }}
-      >
-        Completed
-      </Button>
-      <Button
-        variant={todoID && task[todoID].filter === 'Active' ? 'contained' : 'outlined'}
-        onClick={() => onClickSuperButtonHandler('Active')}
-        color="primary"
-        size="small"
-        style={{ margin: '1px' }}
-      >
-        Active
-      </Button>
-    </>
+      <div className={s.buttonBlock}>
+        <Button
+          variant={todoID && task[todoID].filter === 'All' ? 'contained' : 'outlined'}
+          onClick={() => onClickSuperButtonHandler('All')}
+          color="primary"
+          size="small"
+          style={{ margin: '1px' }}
+        >
+          All
+        </Button>
+        <Button
+          variant={
+            todoID && task[todoID].filter === 'Completed' ? 'contained' : 'outlined'
+          }
+          onClick={() => onClickSuperButtonHandler('Completed')}
+          color="primary"
+          size="small"
+          style={{ margin: '1px' }}
+        >
+          Completed
+        </Button>
+        <Button
+          variant={todoID && task[todoID].filter === 'Active' ? 'contained' : 'outlined'}
+          onClick={() => onClickSuperButtonHandler('Active')}
+          color="primary"
+          size="small"
+          style={{ margin: '1px' }}
+        >
+          Active
+        </Button>
+      </div>
+    </div>
   );
 });
