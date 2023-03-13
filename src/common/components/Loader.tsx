@@ -1,8 +1,8 @@
-import React from 'react';
+import React from 'react'
 
-import { CircularProgress } from '@mui/material';
+import { CircularProgress } from '@mui/material'
 
-import s from 'common/styles/Loader.module.css';
+import s from 'common/styles/Loader.module.css'
 
 const Loader = () => {
   return (
@@ -11,7 +11,7 @@ const Loader = () => {
         <CircularProgress variant="indeterminate" color="inherit" />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Loader;
+export default Loader

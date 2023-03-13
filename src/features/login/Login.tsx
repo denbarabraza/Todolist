@@ -1,25 +1,25 @@
-import React from 'react';
+import React from 'react'
 
-import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
-import FormControl from '@mui/material/FormControl';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormGroup from '@mui/material/FormGroup';
-import FormLabel from '@mui/material/FormLabel';
-import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
-import TextField from '@mui/material/TextField';
-import { useFormik } from 'formik';
-import { Navigate } from 'react-router-dom';
+import Button from '@mui/material/Button'
+import Checkbox from '@mui/material/Checkbox'
+import FormControl from '@mui/material/FormControl'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import FormGroup from '@mui/material/FormGroup'
+import FormLabel from '@mui/material/FormLabel'
+import Grid from '@mui/material/Grid'
+import Paper from '@mui/material/Paper'
+import TextField from '@mui/material/TextField'
+import { useFormik } from 'formik'
+import { Navigate } from 'react-router-dom'
 
-import { validate } from '../../common/utils/ValidateLogin';
-import { RootDispatch, useAppSelector } from '../../store/store';
-import { setLoggedInTC } from '../auth/authReducer';
-import { Todolist } from '../todos/Todolist';
+import { validate } from '../../common/utils/ValidateLogin'
+import { RootDispatch, useAppSelector } from '../../store/store'
+import { setLoggedInTC } from '../auth/authReducer'
+import { Todolist } from '../todos/Todolist'
 
 export const Login = () => {
-  const isLoggedIn = useAppSelector<boolean>(state => state.auth.isLoggedIn);
-  const dispatch = RootDispatch();
+  const isLoggedIn = useAppSelector<boolean>(state => state.auth.isLoggedIn)
+  const dispatch = RootDispatch()
 
   const formik = useFormik({
     initialValues: {
@@ -29,13 +29,13 @@ export const Login = () => {
     },
     validate,
     onSubmit: values => {
-      dispatch(setLoggedInTC(values));
-      formik.resetForm();
+      dispatch(setLoggedInTC(values))
+      formik.resetForm()
     },
-  });
+  })
 
   if (isLoggedIn) {
-    return <Navigate to="/" />;
+    return <Navigate to="/" />
   }
 
   return (
@@ -51,11 +51,7 @@ export const Login = () => {
               <FormLabel>
                 <p>
                   To log in get registered
-                  <a
-                    href="https://social-network.samuraijs.com/"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
+                  <a href="https://social-network.samuraijs.com/" target="_blank" rel="noreferrer">
                     {' '}
                     here
                   </a>
@@ -66,11 +62,7 @@ export const Login = () => {
               </FormLabel>
 
               <FormGroup>
-                <TextField
-                  label="Email"
-                  margin="normal"
-                  {...formik.getFieldProps('email')}
-                />
+                <TextField label="Email" margin="normal" {...formik.getFieldProps('email')} />
                 {formik.touched.email && formik.errors.email ? (
                   <div style={{ color: 'red' }}>{formik.errors.email}</div>
                 ) : null}
@@ -98,5 +90,5 @@ export const Login = () => {
         </Paper>
       </Grid>
     </Grid>
-  );
-};
+  )
+}

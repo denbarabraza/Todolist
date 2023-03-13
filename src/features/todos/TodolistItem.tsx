@@ -1,68 +1,68 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react'
 
-import Button from '@mui/material/Button';
-import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
-import { useSelector } from 'react-redux';
-import { Navigate } from 'react-router-dom';
+import Button from '@mui/material/Button'
+import Grid from '@mui/material/Grid'
+import Paper from '@mui/material/Paper'
+import { useSelector } from 'react-redux'
+import { Navigate } from 'react-router-dom'
 
-import { isClosingModal, setModalStatus } from '../../app/appReducer';
-import { ModalWrapper } from '../modal/ModalWrapper';
-import { TaskCommonType } from '../tasks/taskReducer';
+import { isClosingModal, setModalStatus } from '../../app/appReducer'
+import { ModalWrapper } from '../modal/ModalWrapper'
+import { TaskCommonType } from '../tasks/taskReducer'
 
-import { Todolist } from './Todolist';
-import { setTodosTC } from './todoReducer';
+import { Todolist } from './Todolist'
+import { setTodosTC } from './todoReducer'
 
-import { TodoType } from 'api/api';
-import { RootDispatch, RootStoreType, useAppSelector } from 'store/store';
+import { TodoType } from 'api/api'
+import { RootDispatch, RootStoreType, useAppSelector } from 'store/store'
 
 export const TodolistItem = () => {
-  const [id, setId] = useState('');
-  const [name, setName] = useState('');
+  const [id, setId] = useState('')
+  const [name, setName] = useState('')
 
-  const todolist = useSelector<RootStoreType, TodoType[]>(state => state.todolist);
-  const task = useSelector<RootStoreType, TaskCommonType>(state => state.task);
-  const status = useAppSelector(state => state.app.modalStatus);
-  const isOpen = useAppSelector(state => state.app.isModalClosed);
-  const isLoggedIn = useAppSelector<boolean>(state => state.auth.isLoggedIn);
-  const dispatch = RootDispatch();
+  const todolist = useSelector<RootStoreType, TodoType[]>(state => state.todolist)
+  const task = useSelector<RootStoreType, TaskCommonType>(state => state.task)
+  const status = useAppSelector(state => state.app.modalStatus)
+  const isOpen = useAppSelector(state => state.app.isModalClosed)
+  const isLoggedIn = useAppSelector<boolean>(state => state.auth.isLoggedIn)
+  const dispatch = RootDispatch()
 
   useEffect(() => {
-    if (!isLoggedIn) return;
+    if (!isLoggedIn) return
     if (isOpen) {
-      setId('');
-      dispatch(setTodosTC());
+      setId('')
+      dispatch(setTodosTC())
     }
-  }, []);
+  }, [])
 
   const addNewTodoModal = useCallback(() => {
-    dispatch(setModalStatus('Add todo'));
-    dispatch(isClosingModal(false));
-  }, []);
+    dispatch(setModalStatus('Add todo'))
+    dispatch(isClosingModal(false))
+  }, [])
 
   const onClickRemoveTodo = useCallback(
     (todoID: string, title: string) => {
       if (todoID.trim().length > 0) {
-        setId(todoID);
-        setName(title);
+        setId(todoID)
+        setName(title)
       }
-      dispatch(setModalStatus('Delete todo'));
-      dispatch(isClosingModal(false));
+      dispatch(setModalStatus('Delete todo'))
+      dispatch(isClosingModal(false))
     },
-    [id],
-  );
+    [id]
+  )
 
   const onClickOpenTodo = useCallback(
     (todoID: string) => {
-      setId(todoID);
-      dispatch(setModalStatus('Open todo'));
-      dispatch(isClosingModal(false));
+      setId(todoID)
+      dispatch(setModalStatus('Open todo'))
+      dispatch(isClosingModal(false))
     },
-    [id],
-  );
+    [id]
+  )
 
   if (!isLoggedIn) {
-    return <Navigate to="/login" />;
+    return <Navigate to="/login" />
   }
 
   return (
@@ -100,10 +100,10 @@ export const TodolistItem = () => {
                 />
               </Paper>
             </Grid>
-          );
+          )
         })}
       </Grid>
       <ModalWrapper isOpen={isOpen} status={status} todoID={id} name={name} />
     </>
-  );
-};
+  )
+}

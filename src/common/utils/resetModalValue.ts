@@ -1,8 +1,8 @@
-import { Dispatch } from 'redux';
+import { Dispatch } from 'redux'
 
-import { isClosingModal, setModalStatus } from '../../app/appReducer';
+import { isClosingModal, setModalStatus } from '../../app/appReducer'
 
 export const resetModalValue = (dispatch: Dispatch) => {
-  dispatch(setModalStatus('idle'));
-  dispatch(isClosingModal(true));
-};
+  dispatch(setModalStatus('idle'))
+  dispatch(isClosingModal(true))
+}

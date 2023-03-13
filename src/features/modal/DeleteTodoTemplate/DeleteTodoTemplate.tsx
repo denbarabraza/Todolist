@@ -1,33 +1,33 @@
-import React, { FC, memo, useCallback, useEffect } from 'react';
+import React, { FC, memo, useCallback, useEffect } from 'react'
 
-import Button from '@mui/material/Button';
+import Button from '@mui/material/Button'
 
-import s from '../../../common/styles/TodoItem.module.css';
-import { resetModalValue } from '../../../common/utils/resetModalValue';
-import { RootDispatch } from '../../../store/store';
-import { deleteTodoTC } from '../../todos/todoReducer';
+import s from '../../../common/styles/TodoItem.module.css'
+import { resetModalValue } from '../../../common/utils/resetModalValue'
+import { RootDispatch } from '../../../store/store'
+import { deleteTodoTC } from '../../todos/todoReducer'
 
 type DeleteTodoTemplateType = {
-  title: string;
-  close: () => void;
-  todoID: string | undefined;
-  name?: string;
-};
+  title: string
+  close: () => void
+  todoID: string | undefined
+  name?: string
+}
 
 export const DeleteTodoTemplate: FC<DeleteTodoTemplateType> = memo(
   ({ title, close, todoID, name }) => {
-    const dispatch = RootDispatch();
+    const dispatch = RootDispatch()
 
     const onClickRemoveTodo = useCallback(() => {
       if (todoID) {
-        dispatch(deleteTodoTC(todoID));
-        resetModalValue(dispatch);
+        dispatch(deleteTodoTC(todoID))
+        resetModalValue(dispatch)
       }
-    }, []);
+    }, [])
 
     useEffect(() => {
-      if (!todoID) return;
-    }, [todoID]);
+      if (!todoID) return
+    }, [todoID])
 
     return (
       <div className={s.blockTodoItem}>
@@ -56,6 +56,6 @@ export const DeleteTodoTemplate: FC<DeleteTodoTemplateType> = memo(
           </Button>
         </div>
       </div>
-    );
-  },
-);
+    )
+  }
+)

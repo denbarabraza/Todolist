@@ -1,23 +1,23 @@
-import axios, { AxiosError } from 'axios';
-import { Dispatch } from 'redux';
+import axios, { AxiosError } from 'axios'
+import { Dispatch } from 'redux'
 
-import { ResponseResult, taskAPI, TaskType, UpdateTaskModelType } from '../../api/api';
-import { RequestStatusType, setErrorAppAC, setStatusAppAC } from '../../app/appReducer';
-import { RootDispatchThunkType, RootStoreType } from '../../store/store';
-import { addNewTodoAC, removeTodoAC, setTodosAC } from '../todos/todoReducer';
+import { ResponseResult, taskAPI, TaskType, UpdateTaskModelType } from '../../api/api'
+import { RequestStatusType, setErrorAppAC, setStatusAppAC } from '../../app/appReducer'
+import { RootDispatchThunkType, RootStoreType } from '../../store/store'
+import { addNewTodoAC, removeTodoAC, setTodosAC } from '../todos/todoReducer'
 
 // Type
-export type FilterValueType = 'All' | 'Active' | 'Completed';
+export type FilterValueType = 'All' | 'Active' | 'Completed'
 
 type InTaskType = {
-  data: TaskType[];
-  filter: FilterValueType;
-  taskCount: number;
-  entityStatus: RequestStatusType;
-};
+  data: TaskType[]
+  filter: FilterValueType
+  taskCount: number
+  entityStatus: RequestStatusType
+}
 export type TaskCommonType = {
-  [key: string]: InTaskType;
-};
+  [key: string]: InTaskType
+}
 
 // State
 const initialState: TaskCommonType = {
@@ -35,24 +35,19 @@ const initialState: TaskCommonType = {
   //     ],
   //     filter: "All"
   // }
-};
+}
 
 // Reducer
-export const taskReducer = (
-  state = initialState,
-  action: ActionsType,
-): TaskCommonType => {
+export const taskReducer = (state = initialState, action: ActionsType): TaskCommonType => {
   switch (action.type) {
     case 'REMOVE_TASK': {
       return {
         ...state,
         [action.payload.todoID]: {
           ...state[action.payload.todoID],
-          data: state[action.payload.todoID].data.filter(
-            e => e.id !== action.payload.taskID,
-          ),
+          data: state[action.payload.todoID].data.filter(e => e.id !== action.payload.taskID),
         },
-      };
+      }
     }
     case 'UPDATE_TASK': {
       return <TaskCommonType>{
@@ -60,10 +55,10 @@ export const taskReducer = (
         [action.payload.todoID]: {
           ...state[action.payload.todoID],
           data: state[action.payload.todoID].data.map(e =>
-            e.id === action.payload.taskID ? { ...e, ...action.payload.model } : e,
+            e.id === action.payload.taskID ? { ...e, ...action.payload.model } : e
           ),
         },
-      };
+      }
     }
     case 'CHANGE_FILTER': {
       return {
@@ -72,7 +67,7 @@ export const taskReducer = (
           ...state[action.payload.todoID],
           filter: action.payload.filter,
         },
-      };
+      }
     }
     case 'ADD_TASK': {
       return {
@@ -81,14 +76,14 @@ export const taskReducer = (
           ...state[action.payload.todoID],
           data: [action.payload.task, ...state[action.payload.todoID].data],
         },
-      };
+      }
     }
     case 'REMOVE_TODO': {
-      const stateCopy = { ...state };
+      const stateCopy = { ...state }
 
-      delete stateCopy[action.payload.todoID];
+      delete stateCopy[action.payload.todoID]
 
-      return stateCopy;
+      return stateCopy
     }
     case 'ADD_TODO': {
       return {
@@ -99,14 +94,14 @@ export const taskReducer = (
           taskCount: 0,
         },
         ...state,
-      };
+      }
     }
     case 'SET_TODO_FROM_BACK': {
       return action.payload.todos.reduce((res: TaskCommonType, t) => {
-        res[t.id] = { data: [], filter: 'All', entityStatus: 'idle', taskCount: 0 };
+        res[t.id] = { data: [], filter: 'All', entityStatus: 'idle', taskCount: 0 }
 
-        return res;
-      }, {});
+        return res
+      }, {})
     }
     case 'SET_TASKS_FROM_BACK': {
       return {
@@ -117,7 +112,7 @@ export const taskReducer = (
           filter: 'All',
           taskCount: action.payload.taskCount,
         },
-      };
+      }
     }
     case 'CHANGE_ENTITY_STATUS': {
       return {
@@ -126,12 +121,12 @@ export const taskReducer = (
           ...state[action.payload.todoID],
           entityStatus: action.payload.entityStatus,
         },
-      };
+      }
     }
     default:
-      return state;
+      return state
   }
-};
+}
 
 // Action Type
 type ActionsType =
@@ -143,7 +138,7 @@ type ActionsType =
   | ReturnType<typeof setTodosAC>
   | ReturnType<typeof setTasksAC>
   | ReturnType<typeof updateTasksAC>
-  | ReturnType<typeof changeEntityStatusAC>;
+  | ReturnType<typeof changeEntityStatusAC>
 
 // Action Creator
 export const removeTaskAC = (todoID: string, taskID: string) => {
@@ -153,8 +148,8 @@ export const removeTaskAC = (todoID: string, taskID: string) => {
       todoID,
       taskID,
     },
-  } as const;
-};
+  } as const
+}
 export const changeFilterValueAC = (todoID: string, filter: FilterValueType) => {
   return {
     type: 'CHANGE_FILTER',
@@ -162,8 +157,8 @@ export const changeFilterValueAC = (todoID: string, filter: FilterValueType) => 
       todoID,
       filter,
     },
-  } as const;
-};
+  } as const
+}
 export const addTaskAC = (todoID: string, task: TaskType) => {
   return {
     type: 'ADD_TASK',
@@ -171,8 +166,8 @@ export const addTaskAC = (todoID: string, task: TaskType) => {
       todoID,
       task,
     },
-  } as const;
-};
+  } as const
+}
 export const setTasksAC = (todoID: string, tasks: TaskType[], taskCount: number) => {
   return {
     type: 'SET_TASKS_FROM_BACK',
@@ -181,13 +176,9 @@ export const setTasksAC = (todoID: string, tasks: TaskType[], taskCount: number)
       tasks,
       taskCount,
     },
-  } as const;
-};
-export const updateTasksAC = (
-  todoID: string,
-  taskID: string,
-  model: UpdateDomainTaskModelType,
-) => {
+  } as const
+}
+export const updateTasksAC = (todoID: string, taskID: string, model: UpdateDomainTaskModelType) => {
   return {
     type: 'UPDATE_TASK',
     payload: {
@@ -195,8 +186,8 @@ export const updateTasksAC = (
       taskID,
       model,
     },
-  } as const;
-};
+  } as const
+}
 export const changeEntityStatusAC = (todoID: string, entityStatus: RequestStatusType) => {
   return {
     type: 'CHANGE_ENTITY_STATUS',
@@ -204,88 +195,88 @@ export const changeEntityStatusAC = (todoID: string, entityStatus: RequestStatus
       todoID,
       entityStatus,
     },
-  } as const;
-};
+  } as const
+}
 
 // Thunk Creator
 export const setTasksTC = (todoID: string) => async (dispatch: Dispatch) => {
-  dispatch(setStatusAppAC('loading'));
+  dispatch(setStatusAppAC('loading'))
   try {
-    const res = await taskAPI.getTask(todoID);
+    const res = await taskAPI.getTask(todoID)
 
-    dispatch(setTasksAC(todoID, res.items, res.totalCount));
-    dispatch(setStatusAppAC('succeeded'));
+    dispatch(setTasksAC(todoID, res.items, res.totalCount))
+    dispatch(setStatusAppAC('succeeded'))
   } catch (e) {
     if (axios.isAxiosError<AxiosError<{ message: string }>>(e)) {
-      const err = e.response ? e.response?.data.message : e.message;
+      const err = e.response ? e.response?.data.message : e.message
 
-      dispatch(setErrorAppAC(err));
+      dispatch(setErrorAppAC(err))
     }
-    dispatch(setStatusAppAC('failed'));
+    dispatch(setStatusAppAC('failed'))
   }
-};
+}
 export const createTasksTC =
   (todoID: string, title: string) => async (dispatch: RootDispatchThunkType) => {
-    dispatch(setStatusAppAC('loading'));
-    dispatch(changeEntityStatusAC(todoID, 'loading'));
+    dispatch(setStatusAppAC('loading'))
+    dispatch(changeEntityStatusAC(todoID, 'loading'))
     try {
-      const res = await taskAPI.createTask(todoID, title);
+      const res = await taskAPI.createTask(todoID, title)
 
       if (res.resultCode === ResponseResult.OK) {
-        dispatch(addTaskAC(todoID, res.data.item));
-        await dispatch(setTasksTC(todoID));
+        dispatch(addTaskAC(todoID, res.data.item))
+        await dispatch(setTasksTC(todoID))
       } else if (res.messages.length) {
-        dispatch(setErrorAppAC(res.messages[0]));
+        dispatch(setErrorAppAC(res.messages[0]))
       } else {
-        dispatch(setErrorAppAC('Some error'));
+        dispatch(setErrorAppAC('Some error'))
       }
-      dispatch(setStatusAppAC('succeeded'));
-      dispatch(changeEntityStatusAC(todoID, 'succeeded'));
+      dispatch(setStatusAppAC('succeeded'))
+      dispatch(changeEntityStatusAC(todoID, 'succeeded'))
     } catch (e) {
       if (axios.isAxiosError<AxiosError<{ message: string }>>(e)) {
-        const err = e.response ? e.response?.data.message : e.message;
+        const err = e.response ? e.response?.data.message : e.message
 
-        dispatch(setErrorAppAC(err));
+        dispatch(setErrorAppAC(err))
       }
-      dispatch(setStatusAppAC('failed'));
-      dispatch(changeEntityStatusAC(todoID, 'failed'));
+      dispatch(setStatusAppAC('failed'))
+      dispatch(changeEntityStatusAC(todoID, 'failed'))
     }
-  };
+  }
 export const removeTasksTC =
   (todoID: string, taskID: string) => async (dispatch: RootDispatchThunkType) => {
-    dispatch(setStatusAppAC('loading'));
-    dispatch(changeEntityStatusAC(todoID, 'loading'));
+    dispatch(setStatusAppAC('loading'))
+    dispatch(changeEntityStatusAC(todoID, 'loading'))
     try {
-      const res = await taskAPI.deleteTask(todoID, taskID);
+      const res = await taskAPI.deleteTask(todoID, taskID)
 
-      dispatch(removeTaskAC(todoID, taskID));
-      await dispatch(setTasksTC(todoID));
-      dispatch(setStatusAppAC('succeeded'));
-      dispatch(changeEntityStatusAC(todoID, 'succeeded'));
+      dispatch(removeTaskAC(todoID, taskID))
+      await dispatch(setTasksTC(todoID))
+      dispatch(setStatusAppAC('succeeded'))
+      dispatch(changeEntityStatusAC(todoID, 'succeeded'))
     } catch (e) {
       if (axios.isAxiosError<AxiosError<{ message: string }>>(e)) {
-        const err = e.response ? e.response?.data.message : e.message;
+        const err = e.response ? e.response?.data.message : e.message
 
-        dispatch(setErrorAppAC(err));
+        dispatch(setErrorAppAC(err))
       }
-      dispatch(setStatusAppAC('failed'));
-      dispatch(changeEntityStatusAC(todoID, 'failed'));
+      dispatch(setStatusAppAC('failed'))
+      dispatch(changeEntityStatusAC(todoID, 'failed'))
     }
-  };
+  }
 
 export type UpdateDomainTaskModelType = {
-  title?: string;
-  description?: string;
-  status?: number;
-  priority?: number;
-  startDate?: string | null;
-  deadline?: string | null;
-};
+  title?: string
+  description?: string
+  status?: number
+  priority?: number
+  startDate?: string | null
+  deadline?: string | null
+}
 
 export const updateTaskTC =
   (todoID: string, taskID: string, model: UpdateDomainTaskModelType) =>
   async (dispatch: Dispatch, getState: () => RootStoreType) => {
-    const task = getState().task[todoID].data.find(t => t.id === taskID);
+    const task = getState().task[todoID].data.find(t => t.id === taskID)
 
     if (task) {
       const apiModel: UpdateTaskModelType = {
@@ -296,30 +287,30 @@ export const updateTaskTC =
         deadline: task.deadline,
         status: task.status,
         ...model,
-      };
+      }
 
-      dispatch(setStatusAppAC('loading'));
-      dispatch(changeEntityStatusAC(todoID, 'loading'));
+      dispatch(setStatusAppAC('loading'))
+      dispatch(changeEntityStatusAC(todoID, 'loading'))
       try {
-        const res = await taskAPI.updateTask(todoID, taskID, apiModel);
+        const res = await taskAPI.updateTask(todoID, taskID, apiModel)
 
         if (res.resultCode === ResponseResult.OK) {
-          dispatch(updateTasksAC(todoID, taskID, apiModel));
+          dispatch(updateTasksAC(todoID, taskID, apiModel))
         } else if (res.messages.length) {
-          dispatch(setErrorAppAC(res.messages[0]));
+          dispatch(setErrorAppAC(res.messages[0]))
         } else {
-          dispatch(setErrorAppAC('Some error'));
+          dispatch(setErrorAppAC('Some error'))
         }
-        dispatch(setStatusAppAC('succeeded'));
-        dispatch(changeEntityStatusAC(todoID, 'succeeded'));
+        dispatch(setStatusAppAC('succeeded'))
+        dispatch(changeEntityStatusAC(todoID, 'succeeded'))
       } catch (e) {
         if (axios.isAxiosError<AxiosError<{ message: string }>>(e)) {
-          const err = e.response ? e.response?.data.message : e.message;
+          const err = e.response ? e.response?.data.message : e.message
 
-          dispatch(setErrorAppAC(err));
+          dispatch(setErrorAppAC(err))
         }
-        dispatch(setStatusAppAC('failed'));
-        dispatch(changeEntityStatusAC(todoID, 'failed'));
+        dispatch(setStatusAppAC('failed'))
+        dispatch(changeEntityStatusAC(todoID, 'failed'))
       }
     }
-  };
+  }

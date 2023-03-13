@@ -1,50 +1,48 @@
-import React, { ChangeEvent, FC, memo, useEffect, useState } from 'react';
+import React, { ChangeEvent, FC, memo, useEffect, useState } from 'react'
 
-import TextField from '@mui/material/TextField';
+import TextField from '@mui/material/TextField'
 
-import s from 'common/styles/SuperEditbleSpan.module.css';
+import s from 'common/styles/SuperEditbleSpan.module.css'
 
 type SuperEditbleSpanPropsType = {
-  title: string;
-  callback: (upValue: string) => void;
-};
+  title: string
+  callback: (upValue: string) => void
+}
 
-export const SuperEditbleSpan: FC<SuperEditbleSpanPropsType> = memo(
-  ({ title, callback }) => {
-    const [edit, setEdit] = useState(false);
-    const [upValue, setValue] = useState('');
+export const SuperEditbleSpan: FC<SuperEditbleSpanPropsType> = memo(({ title, callback }) => {
+  const [edit, setEdit] = useState(false)
+  const [upValue, setValue] = useState('')
 
-    const setUpTitle = () => {
-      callback(upValue);
-    };
+  const setUpTitle = () => {
+    callback(upValue)
+  }
 
-    const onDoubleClickHandler = () => {
-      setEdit(!edit);
-      edit && setUpTitle();
-    };
+  const onDoubleClickHandler = () => {
+    setEdit(!edit)
+    edit && setUpTitle()
+  }
 
-    const onChangeInputHandler = (e: ChangeEvent<HTMLInputElement>) => {
-      setValue(e.currentTarget.value);
-    };
+  const onChangeInputHandler = (e: ChangeEvent<HTMLInputElement>) => {
+    setValue(e.currentTarget.value)
+  }
 
-    useEffect(() => {
-      setValue(() => title);
-    }, [title]);
+  useEffect(() => {
+    setValue(() => title)
+  }, [title])
 
-    return (
-      <div className={s.editableItem}>
-        {edit ? (
-          <TextField
-            value={upValue}
-            onChange={onChangeInputHandler}
-            onBlur={onDoubleClickHandler}
-            autoFocus
-            size="small"
-          />
-        ) : (
-          <span onDoubleClick={onDoubleClickHandler}>{title}</span>
-        )}
-      </div>
-    );
-  },
-);
+  return (
+    <div className={s.editableItem}>
+      {edit ? (
+        <TextField
+          value={upValue}
+          onChange={onChangeInputHandler}
+          onBlur={onDoubleClickHandler}
+          autoFocus
+          size="small"
+        />
+      ) : (
+        <span onDoubleClick={onDoubleClickHandler}>{title}</span>
+      )}
+    </div>
+  )
+})

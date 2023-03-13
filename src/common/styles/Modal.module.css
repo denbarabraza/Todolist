@@ -1,32 +1,32 @@
 .modal {
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.4);
-    position: fixed;
-    top: 0;
-    left: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 1;
-    pointer-events: all;
-    transition: 0.4s;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  pointer-events: all;
+  transition: 0.4s;
 }
 
 .modalActive {
-    opacity: 0;
-    pointer-events: none;
-    transform: scale(0.5);
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.5);
 }
 
 .modalContent {
-    padding: 20px;
-    border-radius: 12px;
-    background-color: white;
-    width: 250px;
-    transition: 0.4s all;
+  padding: 20px;
+  border-radius: 12px;
+  background-color: white;
+  width: 250px;
+  transition: 0.4s all;
 }
 
 .modalContentActive {
-    transform: scale(1);
+  transform: scale(1);
 }

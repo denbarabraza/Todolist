@@ -1,21 +1,21 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, useState } from 'react'
 
-import { taskAPI, UpdateTaskModelType } from '../api/api';
+import { taskAPI, UpdateTaskModelType } from '../api/api'
 
 export default {
   title: 'api/TASK',
-};
+}
 
 export const GetTask = () => {
-  const [state, setState] = useState<any>(null);
-  const [todoID, setTodoID] = useState<string>('');
+  const [state, setState] = useState<any>(null)
+  const [todoID, setTodoID] = useState<string>('')
 
   const onClickHandler = () => {
-    taskAPI.getTask(todoID).then(data => setState(data.items));
-  };
+    taskAPI.getTask(todoID).then(data => setState(data.items))
+  }
   const onChangeTodoValue = (e: ChangeEvent<HTMLInputElement>) => {
-    setTodoID(e.currentTarget.value);
-  };
+    setTodoID(e.currentTarget.value)
+  }
 
   return (
     <div>
@@ -23,25 +23,25 @@ export const GetTask = () => {
       <input value={todoID} placeholder="TodoID" onChange={onChangeTodoValue} />
       <button onClick={onClickHandler}>Send value</button>
     </div>
-  );
-};
+  )
+}
 
 export const CreateTask = () => {
-  const [state, setState] = useState<any>(null);
-  const [title, setTitle] = useState<string>('');
-  const [todoID, setTodoID] = useState<string>('');
+  const [state, setState] = useState<any>(null)
+  const [title, setTitle] = useState<string>('')
+  const [todoID, setTodoID] = useState<string>('')
 
   const onClickHandler = () => {
     taskAPI.createTask(todoID, title).then(data => {
-      return setState(data);
-    });
-  };
+      return setState(data)
+    })
+  }
   const onChangeTitleValue = (e: ChangeEvent<HTMLInputElement>) => {
-    setTitle(e.currentTarget.value);
-  };
+    setTitle(e.currentTarget.value)
+  }
   const onChangeTodoValue = (e: ChangeEvent<HTMLInputElement>) => {
-    setTodoID(e.currentTarget.value);
-  };
+    setTodoID(e.currentTarget.value)
+  }
 
   return (
     <div>
@@ -50,14 +50,14 @@ export const CreateTask = () => {
       <input value={title} placeholder="Title" onChange={onChangeTitleValue} />
       <button onClick={onClickHandler}>Send value</button>
     </div>
-  );
-};
+  )
+}
 
 export const UpdateTask = () => {
-  const [state, setState] = useState<any>(null);
-  const [title, setTitle] = useState<string>('');
-  const [todoID, setTodoID] = useState<string>('');
-  const [taskID, setTaskID] = useState<string>('');
+  const [state, setState] = useState<any>(null)
+  const [title, setTitle] = useState<string>('')
+  const [todoID, setTodoID] = useState<string>('')
+  const [taskID, setTaskID] = useState<string>('')
 
   const obj: UpdateTaskModelType = {
     title,
@@ -66,20 +66,20 @@ export const UpdateTask = () => {
     priority: 1,
     startDate: null,
     deadline: null,
-  };
+  }
 
   const onClickHandler = () => {
-    taskAPI.updateTask(todoID, taskID, obj).then(data => setState(data));
-  };
+    taskAPI.updateTask(todoID, taskID, obj).then(data => setState(data))
+  }
   const onChangeTitleValue = (e: ChangeEvent<HTMLInputElement>) => {
-    setTitle(e.currentTarget.value);
-  };
+    setTitle(e.currentTarget.value)
+  }
   const onChangeTodoValue = (e: ChangeEvent<HTMLInputElement>) => {
-    setTodoID(e.currentTarget.value);
-  };
+    setTodoID(e.currentTarget.value)
+  }
   const onChangeTaskValue = (e: ChangeEvent<HTMLInputElement>) => {
-    setTaskID(e.currentTarget.value);
-  };
+    setTaskID(e.currentTarget.value)
+  }
 
   return (
     <div>
@@ -89,23 +89,23 @@ export const UpdateTask = () => {
       <input value={title} placeholder="Title" onChange={onChangeTitleValue} />
       <button onClick={onClickHandler}>Send value</button>
     </div>
-  );
-};
+  )
+}
 
 export const DeleteTask = () => {
-  const [state, setState] = useState<any>(null);
-  const [todoID, setTodoID] = useState<string>('');
-  const [taskID, setTaskID] = useState<string>('');
+  const [state, setState] = useState<any>(null)
+  const [todoID, setTodoID] = useState<string>('')
+  const [taskID, setTaskID] = useState<string>('')
 
   const onClickHandler = () => {
-    taskAPI.deleteTask(todoID, taskID).then(data => setState(data));
-  };
+    taskAPI.deleteTask(todoID, taskID).then(data => setState(data))
+  }
   const onChangeTodoValue = (e: ChangeEvent<HTMLInputElement>) => {
-    setTodoID(e.currentTarget.value);
-  };
+    setTodoID(e.currentTarget.value)
+  }
   const onChangeTaskValue = (e: ChangeEvent<HTMLInputElement>) => {
-    setTaskID(e.currentTarget.value);
-  };
+    setTaskID(e.currentTarget.value)
+  }
 
   return (
     <div>
@@ -114,5 +114,5 @@ export const DeleteTask = () => {
       <input value={taskID} placeholder="TaskID" onChange={onChangeTaskValue} />
       <button onClick={onClickHandler}>Send value</button>
     </div>
-  );
-};
+  )
+}

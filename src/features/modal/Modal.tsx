@@ -1,12 +1,12 @@
-import React, { FC, memo, ReactNode } from 'react';
+import React, { FC, memo, ReactNode } from 'react'
 
-import s from 'common/styles/Modal.module.css';
+import s from 'common/styles/Modal.module.css'
 
 type ModalType = {
-  children?: ReactNode;
-  isOpen: boolean;
-  onClose?: () => void;
-};
+  children?: ReactNode
+  isOpen: boolean
+  onClose?: () => void
+}
 
 export const Modal: FC<ModalType> = memo(({ children, onClose, isOpen }) => {
   return (
@@ -18,5 +18,5 @@ export const Modal: FC<ModalType> = memo(({ children, onClose, isOpen }) => {
         {children}
       </div>
     </div>
-  );
-});
+  )
+})

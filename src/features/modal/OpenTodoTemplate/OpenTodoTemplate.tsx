@@ -1,83 +1,83 @@
-import React, { FC, memo, useCallback, useEffect } from 'react';
+import React, { FC, memo, useCallback, useEffect } from 'react'
 
-import Button from '@mui/material/Button';
-import { useSelector } from 'react-redux';
+import Button from '@mui/material/Button'
+import { useSelector } from 'react-redux'
 
-import { TaskStatuses, TodoType } from '../../../api/api';
-import { InputItemForm } from '../../../common/components/InputItemForm';
-import { SuperEditbleSpan } from '../../../common/components/SuperEditbleSpan';
-import { RootDispatch, RootStoreType, useAppSelector } from '../../../store/store';
-import { Task } from '../../tasks/Task';
+import { TaskStatuses, TodoType } from '../../../api/api'
+import { InputItemForm } from '../../../common/components/InputItemForm'
+import { SuperEditbleSpan } from '../../../common/components/SuperEditbleSpan'
+import { RootDispatch, RootStoreType, useAppSelector } from '../../../store/store'
+import { Task } from '../../tasks/Task'
 import {
   changeFilterValueAC,
   createTasksTC,
   FilterValueType,
   TaskCommonType,
-} from '../../tasks/taskReducer';
-import { updateTodoTC } from '../../todos/todoReducer';
+} from '../../tasks/taskReducer'
+import { updateTodoTC } from '../../todos/todoReducer'
 
-import s from 'common/styles/OpenTodoTemplate.module.css';
+import s from 'common/styles/OpenTodoTemplate.module.css'
 
 type OpenTodoTemplateType = {
-  close: () => void;
-  todoID: string | undefined;
-};
+  close: () => void
+  todoID: string | undefined
+}
 
 export const OpenTodoTemplate: FC<OpenTodoTemplateType> = memo(({ close, todoID }) => {
-  const todoActive = useSelector<RootStoreType, TodoType[]>(state => state.todolist);
-  const isOpen = useAppSelector(state => state.app.isModalClosed);
-  const task = useSelector<RootStoreType, TaskCommonType>(state => state.task);
-  const dispatch = RootDispatch();
+  const todoActive = useSelector<RootStoreType, TodoType[]>(state => state.todolist)
+  const isOpen = useAppSelector(state => state.app.isModalClosed)
+  const task = useSelector<RootStoreType, TaskCommonType>(state => state.task)
+  const dispatch = RootDispatch()
 
   const onClickSuperButtonHandler = useCallback(
     (filter: FilterValueType) => {
       if (todoID) {
-        dispatch(changeFilterValueAC(todoID, filter));
+        dispatch(changeFilterValueAC(todoID, filter))
       }
     },
-    [todoID],
-  );
+    [todoID]
+  )
 
   const addNewTask = useCallback(
     (value: string) => {
       if (todoID) {
-        dispatch(createTasksTC(todoID, value));
+        dispatch(createTasksTC(todoID, value))
       }
     },
-    [todoID],
-  );
+    [todoID]
+  )
 
   const setUpTodoTitle = useCallback((upValue: string) => {
     if (todoID) {
-      dispatch(updateTodoTC(todoID, upValue));
+      dispatch(updateTodoTC(todoID, upValue))
     }
-  }, []);
+  }, [])
 
-  let filteredTask;
+  let filteredTask
 
   if (todoID) {
-    filteredTask = task[todoID].data;
+    filteredTask = task[todoID].data
   }
 
   if (todoID && task[todoID].filter === 'Active') {
-    filteredTask = task[todoID].data.filter(e => e.status === TaskStatuses.New);
+    filteredTask = task[todoID].data.filter(e => e.status === TaskStatuses.New)
   }
   if (todoID && task[todoID].filter === 'Completed') {
-    filteredTask = task[todoID].data.filter(e => e.status === TaskStatuses.Completed);
+    filteredTask = task[todoID].data.filter(e => e.status === TaskStatuses.Completed)
   }
 
-  let todo;
+  let todo
 
   if (todoID) {
-    todo = todoActive.find(e => e.id === todoID);
+    todo = todoActive.find(e => e.id === todoID)
   }
 
   useEffect(() => {
-    if (!todoID) return;
+    if (!todoID) return
     // if (isOpen) {
     //   dispatch(setTasksTC(todoID));
     // }
-  }, [task]);
+  }, [task])
 
   return (
     <div className={s.openingTodoBlock}>
@@ -106,9 +106,7 @@ export const OpenTodoTemplate: FC<OpenTodoTemplateType> = memo(({ close, todoID 
           All
         </Button>
         <Button
-          variant={
-            todoID && task[todoID].filter === 'Completed' ? 'contained' : 'outlined'
-          }
+          variant={todoID && task[todoID].filter === 'Completed' ? 'contained' : 'outlined'}
           onClick={() => onClickSuperButtonHandler('Completed')}
           color="primary"
           size="small"
@@ -127,5 +125,5 @@ export const OpenTodoTemplate: FC<OpenTodoTemplateType> = memo(({ close, todoID 
         </Button>
       </div>
     </div>
-  );
-});
+  )
+})
