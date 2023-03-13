@@ -8,7 +8,7 @@ import { Navigate } from 'react-router-dom';
 
 import { isClosingModal, setModalStatus } from '../../app/appReducer';
 import { ModalWrapper } from '../modal/ModalWrapper';
-import { setTasksTC } from '../tasks/taskReducer';
+import { TaskCommonType } from '../tasks/taskReducer';
 
 import { Todolist } from './Todolist';
 import { setTodosTC } from './todoReducer';
@@ -21,6 +21,7 @@ export const TodolistItem = () => {
   const [name, setName] = useState('');
 
   const todolist = useSelector<RootStoreType, TodoType[]>(state => state.todolist);
+  const task = useSelector<RootStoreType, TaskCommonType>(state => state.task);
   const status = useAppSelector(state => state.app.modalStatus);
   const isOpen = useAppSelector(state => state.app.isModalClosed);
   const isLoggedIn = useAppSelector<boolean>(state => state.auth.isLoggedIn);
@@ -94,6 +95,8 @@ export const TodolistItem = () => {
                   title={t.title}
                   onClickRemoveTodo={onClickRemoveTodo}
                   onClickOpenTodo={onClickOpenTodo}
+                  taskCount={task[t.id].taskCount}
+                  todolist={t}
                 />
               </Paper>
             </Grid>

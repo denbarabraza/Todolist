@@ -4,7 +4,8 @@ import { v1 } from 'uuid';
 
 import { ResponseResult, todoAPI, TodoType } from '../../api/api';
 import { setErrorAppAC, setStatusAppAC } from '../../app/appReducer';
-import { changeEntityStatusAC } from '../tasks/taskReducer';
+import { RootDispatch, RootDispatchThunkType } from '../../store/store';
+import { changeEntityStatusAC, setTasksAC, setTasksTC } from '../tasks/taskReducer';
 
 export const todolistId1 = v1();
 export const todolistId2 = v1();
@@ -40,7 +41,8 @@ type ActionsType =
   | ReturnType<typeof addNewTodoAC>
   | ReturnType<typeof setUpTodoTitleAC>
   | ReturnType<typeof setTodosAC>
-  | ReturnType<typeof resetTodoAC>;
+  | ReturnType<typeof resetTodoAC>
+  | ReturnType<typeof setTasksAC>;
 
 export const removeTodoAC = (todoID: string) => {
   return {
@@ -81,11 +83,16 @@ export const resetTodoAC = () => {
   } as const;
 };
 
-export const setTodosTC = () => (dispatch: Dispatch) => {
+export const setTodosTC = () => (dispatch: RootDispatchThunkType) => {
   dispatch(setStatusAppAC('loading'));
   todoAPI
+
     .getTodo()
     .then(res => {
+      if (res.length) {
+        res.forEach(t => dispatch(setTasksTC(t.id)));
+      }
+
       dispatch(setTodosAC(res));
       dispatch(setStatusAppAC('succeeded'));
     })
@@ -120,13 +127,13 @@ export const createTodoTC = (title: string) => (dispatch: Dispatch) => {
       dispatch(setStatusAppAC('failed'));
     });
 };
-export const deleteTodoTC = (todoID: string) => (dispatch: Dispatch) => {
+export const deleteTodoTC = (todoID: string) => (dispatch: RootDispatchThunkType) => {
   dispatch(changeEntityStatusAC(todoID, 'loading'));
   dispatch(setStatusAppAC('loading'));
   todoAPI
     .deleteTodo(todoID)
     .then(() => {
-      dispatch(removeTodoAC(todoID));
+      dispatch(setTodosTC());
       dispatch(setStatusAppAC('succeeded'));
       dispatch(changeEntityStatusAC(todoID, 'succeeded'));
     })

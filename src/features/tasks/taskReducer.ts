@@ -3,7 +3,7 @@ import { Dispatch } from 'redux';
 
 import { ResponseResult, taskAPI, TaskType, UpdateTaskModelType } from '../../api/api';
 import { RequestStatusType, setErrorAppAC, setStatusAppAC } from '../../app/appReducer';
-import { RootStoreType } from '../../store/store';
+import { RootDispatchThunkType, RootStoreType } from '../../store/store';
 import { addNewTodoAC, removeTodoAC, setTodosAC } from '../todos/todoReducer';
 
 // Type
@@ -225,7 +225,7 @@ export const setTasksTC = (todoID: string) => async (dispatch: Dispatch) => {
   }
 };
 export const createTasksTC =
-  (todoID: string, title: string) => async (dispatch: Dispatch) => {
+  (todoID: string, title: string) => async (dispatch: RootDispatchThunkType) => {
     dispatch(setStatusAppAC('loading'));
     dispatch(changeEntityStatusAC(todoID, 'loading'));
     try {
@@ -233,6 +233,7 @@ export const createTasksTC =
 
       if (res.resultCode === ResponseResult.OK) {
         dispatch(addTaskAC(todoID, res.data.item));
+        await dispatch(setTasksTC(todoID));
       } else if (res.messages.length) {
         dispatch(setErrorAppAC(res.messages[0]));
       } else {
@@ -251,13 +252,14 @@ export const createTasksTC =
     }
   };
 export const removeTasksTC =
-  (todoID: string, taskID: string) => async (dispatch: Dispatch) => {
+  (todoID: string, taskID: string) => async (dispatch: RootDispatchThunkType) => {
     dispatch(setStatusAppAC('loading'));
     dispatch(changeEntityStatusAC(todoID, 'loading'));
     try {
       const res = await taskAPI.deleteTask(todoID, taskID);
 
       dispatch(removeTaskAC(todoID, taskID));
+      await dispatch(setTasksTC(todoID));
       dispatch(setStatusAppAC('succeeded'));
       dispatch(changeEntityStatusAC(todoID, 'succeeded'));
     } catch (e) {

@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import { TaskStatuses, TodoType } from '../../../api/api';
 import { InputItemForm } from '../../../common/components/InputItemForm';
 import { SuperEditbleSpan } from '../../../common/components/SuperEditbleSpan';
-import { RootDispatch, RootStoreType } from '../../../store/store';
+import { RootDispatch, RootStoreType, useAppSelector } from '../../../store/store';
 import { Task } from '../../tasks/Task';
 import {
   changeFilterValueAC,
@@ -24,8 +24,9 @@ type OpenTodoTemplateType = {
 };
 
 export const OpenTodoTemplate: FC<OpenTodoTemplateType> = memo(({ close, todoID }) => {
-  const task = useSelector<RootStoreType, TaskCommonType>(state => state.task);
   const todoActive = useSelector<RootStoreType, TodoType[]>(state => state.todolist);
+  const isOpen = useAppSelector(state => state.app.isModalClosed);
+  const task = useSelector<RootStoreType, TaskCommonType>(state => state.task);
   const dispatch = RootDispatch();
 
   const onClickSuperButtonHandler = useCallback(
@@ -73,7 +74,10 @@ export const OpenTodoTemplate: FC<OpenTodoTemplateType> = memo(({ close, todoID 
 
   useEffect(() => {
     if (!todoID) return;
-  }, []);
+    // if (isOpen) {
+    //   dispatch(setTasksTC(todoID));
+    // }
+  }, [task]);
 
   return (
     <div className={s.openingTodoBlock}>
