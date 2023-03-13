@@ -3,8 +3,9 @@ import React, { FC, memo, useCallback, useEffect } from 'react';
 import Button from '@mui/material/Button';
 import { useSelector } from 'react-redux';
 
-import { TaskStatuses } from '../../../api/api';
+import { TaskStatuses, TodoType } from '../../../api/api';
 import { InputItemForm } from '../../../common/components/InputItemForm';
+import { SuperEditbleSpan } from '../../../common/components/SuperEditbleSpan';
 import { RootDispatch, RootStoreType } from '../../../store/store';
 import { Task } from '../../tasks/Task';
 import {
@@ -13,6 +14,7 @@ import {
   FilterValueType,
   TaskCommonType,
 } from '../../tasks/taskReducer';
+import { updateTodoTC } from '../../todos/todoReducer';
 
 import s from 'common/styles/OpenTodoTemplate.module.css';
 
@@ -23,6 +25,7 @@ type OpenTodoTemplateType = {
 
 export const OpenTodoTemplate: FC<OpenTodoTemplateType> = memo(({ close, todoID }) => {
   const task = useSelector<RootStoreType, TaskCommonType>(state => state.task);
+  const todoActive = useSelector<RootStoreType, TodoType[]>(state => state.todolist);
   const dispatch = RootDispatch();
 
   const onClickSuperButtonHandler = useCallback(
@@ -43,6 +46,12 @@ export const OpenTodoTemplate: FC<OpenTodoTemplateType> = memo(({ close, todoID 
     [todoID],
   );
 
+  const setUpTodoTitle = useCallback((upValue: string) => {
+    if (todoID) {
+      dispatch(updateTodoTC(todoID, upValue));
+    }
+  }, []);
+
   let filteredTask;
 
   if (todoID) {
@@ -56,14 +65,19 @@ export const OpenTodoTemplate: FC<OpenTodoTemplateType> = memo(({ close, todoID 
     filteredTask = task[todoID].data.filter(e => e.status === TaskStatuses.Completed);
   }
 
+  let todo;
+
+  if (todoID) {
+    todo = todoActive.find(e => e.id === todoID);
+  }
+
   useEffect(() => {
     if (!todoID) return;
   }, []);
 
-  console.log(todoID);
-
   return (
     <div className={s.openingTodoBlock}>
+      {todo && <SuperEditbleSpan title={todo.title} callback={setUpTodoTitle} />}
       <InputItemForm callback={addNewTask} close={close} status="Add task" />
       <div>
         {filteredTask &&

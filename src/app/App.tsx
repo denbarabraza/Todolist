@@ -4,9 +4,9 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Container from '@mui/material/Container';
 import { Navigate, Route, Routes } from 'react-router-dom';
 
+import AppBarItem from '../common/components/AppBarItem';
 import Loader from '../common/components/Loader';
 
-import AppBarItem from './AppBarItem';
 import { RequestStatusType } from './appReducer';
 
 import { ErrorSnackbar } from 'common/components/ErrorSnackbar';

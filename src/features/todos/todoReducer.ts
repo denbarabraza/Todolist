@@ -25,7 +25,7 @@ export const todoReducer = (state = initialState, action: ActionsType): TodoType
       );
     }
     case 'SET_TODO_FROM_BACK': {
-      return [...action.payload.todos, ...state];
+      return [...action.payload.todos];
     }
     case 'RESET_TODO': {
       return initialState;

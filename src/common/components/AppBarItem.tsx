@@ -6,9 +6,9 @@ import IconButton from '@mui/material/IconButton';
 import Toolbar from '@mui/material/Toolbar';
 import { useSelector } from 'react-redux';
 
-import s from '../common/styles/AppBarItem.module.css';
-import { logOutTC } from '../features/auth/authReducer';
-import { RootDispatch, RootStoreType, useAppSelector } from '../store/store';
+import { logOutTC } from '../../features/auth/authReducer';
+import { RootDispatch, RootStoreType, useAppSelector } from '../../store/store';
+import s from '../styles/AppBarItem.module.css';
 
 import logout from 'assets/logout.png';
 

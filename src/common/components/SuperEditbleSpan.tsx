@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FC, memo, useState } from 'react';
+import React, { ChangeEvent, FC, memo, useEffect, useState } from 'react';
 
 import TextField from '@mui/material/TextField';
 
@@ -12,7 +12,7 @@ type SuperEditbleSpanPropsType = {
 export const SuperEditbleSpan: FC<SuperEditbleSpanPropsType> = memo(
   ({ title, callback }) => {
     const [edit, setEdit] = useState(false);
-    const [upValue, setValue] = useState(title);
+    const [upValue, setValue] = useState('');
 
     const setUpTitle = () => {
       callback(upValue);
@@ -26,6 +26,10 @@ export const SuperEditbleSpan: FC<SuperEditbleSpanPropsType> = memo(
     const onChangeInputHandler = (e: ChangeEvent<HTMLInputElement>) => {
       setValue(e.currentTarget.value);
     };
+
+    useEffect(() => {
+      setValue(() => title);
+    }, [title]);
 
     return (
       <div className={s.editableItem}>

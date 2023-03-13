@@ -8,6 +8,7 @@ import { Navigate } from 'react-router-dom';
 
 import { isClosingModal, setModalStatus } from '../../app/appReducer';
 import { ModalWrapper } from '../modal/ModalWrapper';
+import { setTasksTC } from '../tasks/taskReducer';
 
 import { Todolist } from './Todolist';
 import { setTodosTC } from './todoReducer';

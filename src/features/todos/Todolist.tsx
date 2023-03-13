@@ -3,6 +3,7 @@ import React, { FC, memo, useCallback, useEffect } from 'react';
 import Button from '@mui/material/Button';
 import { useSelector } from 'react-redux';
 
+import { TodoType } from '../../api/api';
 import s from '../../common/styles/Todolist.module.css';
 import { setTasksTC, TaskCommonType } from '../tasks/taskReducer';
 
@@ -17,7 +18,7 @@ type TodolistPropsType = {
   todoID: string;
   title: string;
   onClickRemoveTodo: (todoID: string, title: string) => void;
-  onClickOpenTodo: (todoID: string) => void;
+  onClickOpenTodo: (todoID: string, title: string) => void;
 };
 
 export const Todolist: FC<TodolistPropsType> = memo(
@@ -36,7 +37,7 @@ export const Todolist: FC<TodolistPropsType> = memo(
       onClickRemoveTodo(todoID, title);
     };
     const onClickOpenTodoHandler = () => {
-      onClickOpenTodo(todoID);
+      onClickOpenTodo(todoID, title);
     };
 
     const setUpTodoTitle = useCallback((upValue: string) => {
