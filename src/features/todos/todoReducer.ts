@@ -86,7 +86,6 @@ export const resetTodoAC = () => {
 export const setTodosTC = () => (dispatch: RootDispatchThunkType) => {
   dispatch(setStatusAppAC('loading'))
   todoAPI
-
     .getTodo()
     .then(res => {
       if (res.length) {
