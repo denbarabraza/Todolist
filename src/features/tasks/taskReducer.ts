@@ -1,9 +1,15 @@
 import axios, { AxiosError } from 'axios'
-import { Dispatch } from 'redux'
+import { call, put } from 'redux-saga/effects'
 
-import { ResponseResult, taskAPI, TaskType, UpdateTaskModelType } from '../../api/api'
+import {
+  GetTaskType,
+  ResponseResult,
+  ResponseType,
+  taskAPI,
+  TaskType,
+  UpdateTaskModelType,
+} from '../../api/api'
 import { RequestStatusType, setErrorAppAC, setStatusAppAC } from '../../app/appReducer'
-import { RootDispatchThunkType, RootStoreType } from '../../store/store'
 import { addNewTodoAC, removeTodoAC, setTodosAC } from '../todos/todoReducer'
 
 // Type
@@ -20,22 +26,7 @@ export type TaskCommonType = {
 }
 
 // State
-const initialState: TaskCommonType = {
-  // [todolistId1]: {
-  //     data: [
-  //         {id: v1(), title: "HTML&CSS", description:' ', status: TaskStatuses.Completed, priority: TaskPriorities.Low, startDate: '', deadline: '',todoListId: todolistId1, order: 0,addedDate: ''},
-  //         {id: v1(), title: "JS",description:'', status: TaskStatuses.New, priority: TaskPriorities.Low, startDate: '', deadline: '',todoListId: todolistId1, order: 0,addedDate: ''}
-  //     ],
-  //     filter: "All"
-  // },
-  // [todolistId2]: {
-  //     data: [
-  //         {id: v1(), title: "Milk",description:' ', status: TaskStatuses.Completed, priority: TaskPriorities.Low, startDate: '', deadline: '',todoListId: todolistId2, order: 0,addedDate: ''},
-  //         {id: v1(), title: "Salt",description:'', status: TaskStatuses.Completed, priority: TaskPriorities.Low, startDate: '', deadline: '',todoListId: todolistId2, order: 0,addedDate: ''}
-  //     ],
-  //     filter: "All"
-  // }
-}
+const initialState: TaskCommonType = {}
 
 // Reducer
 export const taskReducer = (state = initialState, action: ActionsType): TaskCommonType => {
@@ -198,71 +189,108 @@ export const changeEntityStatusAC = (todoID: string, entityStatus: RequestStatus
   } as const
 }
 
-// Thunk Creator
-export const setTasksTC = (todoID: string) => async (dispatch: Dispatch) => {
-  dispatch(setStatusAppAC('loading'))
+//Sagas
+export function* setTaskWorkerSaga(action: ReturnType<typeof setTaskSC>) {
+  yield put(setStatusAppAC('loading'))
   try {
-    const res = await taskAPI.getTask(todoID)
+    const res: GetTaskType = yield call(taskAPI.getTask, action.payload.todoID)
 
-    dispatch(setTasksAC(todoID, res.items, res.totalCount))
-    dispatch(setStatusAppAC('succeeded'))
+    yield put(setTasksAC(action.payload.todoID, res.items, res.totalCount))
+    yield put(setStatusAppAC('succeeded'))
   } catch (e) {
     if (axios.isAxiosError<AxiosError<{ message: string }>>(e)) {
       const err = e.response ? e.response?.data.message : e.message
 
-      dispatch(setErrorAppAC(err))
+      yield put(setErrorAppAC(err))
     }
-    dispatch(setStatusAppAC('failed'))
+    yield put(setStatusAppAC('failed'))
   }
 }
-export const createTasksTC =
-  (todoID: string, title: string) => async (dispatch: RootDispatchThunkType) => {
-    dispatch(setStatusAppAC('loading'))
-    dispatch(changeEntityStatusAC(todoID, 'loading'))
-    try {
-      const res = await taskAPI.createTask(todoID, title)
 
-      if (res.resultCode === ResponseResult.OK) {
-        dispatch(addTaskAC(todoID, res.data.item))
-        await dispatch(setTasksTC(todoID))
-      } else if (res.messages.length) {
-        dispatch(setErrorAppAC(res.messages[0]))
-      } else {
-        dispatch(setErrorAppAC('Some error'))
-      }
-      dispatch(setStatusAppAC('succeeded'))
-      dispatch(changeEntityStatusAC(todoID, 'succeeded'))
-    } catch (e) {
-      if (axios.isAxiosError<AxiosError<{ message: string }>>(e)) {
-        const err = e.response ? e.response?.data.message : e.message
-
-        dispatch(setErrorAppAC(err))
-      }
-      dispatch(setStatusAppAC('failed'))
-      dispatch(changeEntityStatusAC(todoID, 'failed'))
-    }
+export const setTaskSC = (todoID: string) => {
+  return {
+    type: 'TASK/SET_TASK',
+    payload: {
+      todoID,
+    },
   }
-export const removeTasksTC =
-  (todoID: string, taskID: string) => async (dispatch: RootDispatchThunkType) => {
-    dispatch(setStatusAppAC('loading'))
-    dispatch(changeEntityStatusAC(todoID, 'loading'))
-    try {
-      const res = await taskAPI.deleteTask(todoID, taskID)
+}
 
-      dispatch(removeTaskAC(todoID, taskID))
-      await dispatch(setTasksTC(todoID))
-      dispatch(setStatusAppAC('succeeded'))
-      dispatch(changeEntityStatusAC(todoID, 'succeeded'))
-    } catch (e) {
-      if (axios.isAxiosError<AxiosError<{ message: string }>>(e)) {
-        const err = e.response ? e.response?.data.message : e.message
+export function* createTasksSaga(action: ReturnType<typeof createTasksSC>) {
+  yield put(setStatusAppAC('loading'))
+  yield put(changeEntityStatusAC(action.payload.todoID, 'loading'))
+  try {
+    const res: ResponseType<{ item: TaskType }> = yield call(
+      taskAPI.createTask,
+      action.payload.todoID,
+      action.payload.title
+    )
 
-        dispatch(setErrorAppAC(err))
-      }
-      dispatch(setStatusAppAC('failed'))
-      dispatch(changeEntityStatusAC(todoID, 'failed'))
+    if (res.resultCode === ResponseResult.OK) {
+      yield put(addTaskAC(action.payload.todoID, res.data.item))
+      yield put(setTaskSC(action.payload.todoID))
+    } else if (res.messages.length) {
+      yield put(setErrorAppAC(res.messages[0]))
+    } else {
+      yield put(setErrorAppAC('Some error'))
     }
+    yield put(setStatusAppAC('succeeded'))
+    yield put(changeEntityStatusAC(action.payload.todoID, 'succeeded'))
+  } catch (e) {
+    if (axios.isAxiosError<AxiosError<{ message: string }>>(e)) {
+      const err = e.response ? e.response?.data.message : e.message
+
+      yield put(setErrorAppAC(err))
+    }
+    yield put(setStatusAppAC('failed'))
+    yield put(changeEntityStatusAC(action.payload.todoID, 'failed'))
   }
+}
+
+export const createTasksSC = (todoID: string, title: string) => {
+  return {
+    type: 'TASK/CREATE_TASK',
+    payload: {
+      todoID,
+      title,
+    },
+  }
+}
+
+export function* removeTasksSaga(action: ReturnType<typeof removeTasksSC>) {
+  yield put(setStatusAppAC('loading'))
+  yield put(changeEntityStatusAC(action.payload.todoID, 'loading'))
+  try {
+    const res: ResponseType<{ item: TaskType }> = yield call(
+      taskAPI.deleteTask,
+      action.payload.todoID,
+      action.payload.taskID
+    )
+
+    yield put(removeTaskAC(action.payload.todoID, action.payload.taskID))
+    yield put(setTaskSC(action.payload.todoID))
+    yield put(setStatusAppAC('succeeded'))
+    yield put(changeEntityStatusAC(action.payload.todoID, 'succeeded'))
+  } catch (e) {
+    if (axios.isAxiosError<AxiosError<{ message: string }>>(e)) {
+      const err = e.response ? e.response?.data.message : e.message
+
+      yield put(setErrorAppAC(err))
+    }
+    yield put(setStatusAppAC('failed'))
+    yield put(changeEntityStatusAC(action.payload.todoID, 'failed'))
+  }
+}
+
+export const removeTasksSC = (todoID: string, taskID: string) => {
+  return {
+    type: 'TASK/REMOVE_TASK',
+    payload: {
+      todoID,
+      taskID,
+    },
+  }
+}
 
 export type UpdateDomainTaskModelType = {
   title?: string
@@ -273,44 +301,66 @@ export type UpdateDomainTaskModelType = {
   deadline?: string | null
 }
 
-export const updateTaskTC =
-  (todoID: string, taskID: string, model: UpdateDomainTaskModelType) =>
-  async (dispatch: Dispatch, getState: () => RootStoreType) => {
-    const task = getState().task[todoID].data.find(t => t.id === taskID)
+export function* updateTaskSaga(action: ReturnType<typeof updateTaskSC>) {
+  const task = action.payload.taskAll[action.payload.todoID].data.find(
+    t => t.id === action.payload.taskID
+  )
 
-    if (task) {
-      const apiModel: UpdateTaskModelType = {
-        title: task.title,
-        description: task.description,
-        priority: task.priority,
-        startDate: task.startDate,
-        deadline: task.deadline,
-        status: task.status,
-        ...model,
+  if (task) {
+    const apiModel: UpdateTaskModelType = {
+      title: task.title,
+      description: task.description,
+      priority: task.priority,
+      startDate: task.startDate,
+      deadline: task.deadline,
+      status: task.status,
+      ...action.payload.model,
+    }
+
+    yield put(setStatusAppAC('loading'))
+    yield put(changeEntityStatusAC(action.payload.todoID, 'loading'))
+    try {
+      const res: ResponseType<{ item: TaskType }> = yield call(
+        taskAPI.updateTask,
+        action.payload.todoID,
+        action.payload.taskID,
+        apiModel
+      )
+
+      if (res.resultCode === ResponseResult.OK) {
+        yield put(updateTasksAC(action.payload.todoID, action.payload.taskID, apiModel))
+      } else if (res.messages.length) {
+        yield put(setErrorAppAC(res.messages[0]))
+      } else {
+        yield put(setErrorAppAC('Some error'))
       }
+      yield put(setStatusAppAC('succeeded'))
+      yield put(changeEntityStatusAC(action.payload.todoID, 'succeeded'))
+    } catch (e) {
+      if (axios.isAxiosError<AxiosError<{ message: string }>>(e)) {
+        const err = e.response ? e.response?.data.message : e.message
 
-      dispatch(setStatusAppAC('loading'))
-      dispatch(changeEntityStatusAC(todoID, 'loading'))
-      try {
-        const res = await taskAPI.updateTask(todoID, taskID, apiModel)
-
-        if (res.resultCode === ResponseResult.OK) {
-          dispatch(updateTasksAC(todoID, taskID, apiModel))
-        } else if (res.messages.length) {
-          dispatch(setErrorAppAC(res.messages[0]))
-        } else {
-          dispatch(setErrorAppAC('Some error'))
-        }
-        dispatch(setStatusAppAC('succeeded'))
-        dispatch(changeEntityStatusAC(todoID, 'succeeded'))
-      } catch (e) {
-        if (axios.isAxiosError<AxiosError<{ message: string }>>(e)) {
-          const err = e.response ? e.response?.data.message : e.message
-
-          dispatch(setErrorAppAC(err))
-        }
-        dispatch(setStatusAppAC('failed'))
-        dispatch(changeEntityStatusAC(todoID, 'failed'))
+        yield put(setErrorAppAC(err))
       }
+      yield put(setStatusAppAC('failed'))
+      yield put(changeEntityStatusAC(action.payload.todoID, 'failed'))
     }
   }
+}
+
+export const updateTaskSC = (
+  todoID: string,
+  taskID: string,
+  model: UpdateDomainTaskModelType,
+  taskAll: TaskCommonType
+) => {
+  return {
+    type: 'TASK/UPDATE_TASK',
+    payload: {
+      todoID,
+      taskID,
+      model,
+      taskAll,
+    },
+  }
+}

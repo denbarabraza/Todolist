@@ -4,8 +4,8 @@ import { v1 } from 'uuid'
 
 import { ResponseResult, todoAPI, TodoType } from '../../api/api'
 import { setErrorAppAC, setStatusAppAC } from '../../app/appReducer'
-import { RootDispatch, RootDispatchThunkType } from '../../store/store'
-import { changeEntityStatusAC, setTasksAC, setTasksTC } from '../tasks/taskReducer'
+import { RootDispatchThunkType } from '../../store/store'
+import { changeEntityStatusAC, setTasksAC, setTaskSC } from '../tasks/taskReducer'
 
 export const todolistId1 = v1()
 export const todolistId2 = v1()
@@ -89,7 +89,7 @@ export const setTodosTC = () => (dispatch: RootDispatchThunkType) => {
     .getTodo()
     .then(res => {
       if (res.length) {
-        res.forEach(t => dispatch(setTasksTC(t.id)))
+        res.forEach(t => dispatch(setTaskSC(t.id)))
       }
 
       dispatch(setTodosAC(res))
@@ -102,6 +102,7 @@ export const setTodosTC = () => (dispatch: RootDispatchThunkType) => {
       dispatch(setStatusAppAC('failed'))
     })
 }
+
 export const createTodoTC = (title: string) => (dispatch: Dispatch) => {
   dispatch(setStatusAppAC('loading'))
   todoAPI
@@ -169,3 +170,20 @@ export const updateTodoTC = (todoID: string, title: string) => (dispatch: Dispat
       dispatch(changeEntityStatusAC(todoID, 'failed'))
     })
 }
+
+/*export const setTasksTC = (todoID: string) => async (dispatch: Dispatch) => {
+  dispatch(setStatusAppAC('loading'))
+  try {
+    const res = await taskAPI.getTask(todoID)
+
+    dispatch(setTasksAC(todoID, res.items, res.totalCount))
+    dispatch(setStatusAppAC('succeeded'))
+  } catch (e) {
+    if (axios.isAxiosError<AxiosError<{ message: string }>>(e)) {
+      const err = e.response ? e.response?.data.message : e.message
+
+      dispatch(setErrorAppAC(err))
+    }
+    dispatch(setStatusAppAC('failed'))
+  }
+}*/

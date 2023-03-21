@@ -2,12 +2,13 @@ import React, { memo, useCallback } from 'react'
 
 import Delete from '@mui/icons-material/Delete'
 import IconButton from '@mui/material/IconButton'
+import { useSelector } from 'react-redux'
 
-import { TaskStatuses, TaskType } from '../../api/api'
+import { TaskStatuses, TaskType, TodoType } from '../../api/api'
 import { SuperEditbleSpan } from '../../common/components/SuperEditbleSpan'
-import { RootDispatch } from '../../store/store'
+import { RootDispatch, RootStoreType } from '../../store/store'
 
-import { removeTasksTC, updateTaskTC } from './taskReducer'
+import { removeTasksSC, TaskCommonType, updateTaskSC } from './taskReducer'
 
 import s from 'common/styles/TaskItem.module.css'
 
@@ -18,20 +19,21 @@ type TaskPropsType = {
 }
 
 export const Task: React.FC<TaskPropsType> = memo(({ task, todoID, disabled }) => {
+  const taskAll = useSelector<RootStoreType, TaskCommonType>(state => state.task)
   const dispatch = RootDispatch()
 
   const onClickRemoveTask = useCallback(() => {
-    dispatch(removeTasksTC(todoID, task.id))
+    dispatch(removeTasksSC(todoID, task.id))
   }, [todoID, task])
   const onChangeTaskStatus = useCallback(
     (taskID: string, status: TaskStatuses) => {
-      dispatch(updateTaskTC(todoID, taskID, { status }))
+      dispatch(updateTaskSC(todoID, taskID, { status }, taskAll))
     },
     [todoID, task]
   )
   const setUpTasksTitle = useCallback(
     (upValue: string) => {
-      dispatch(updateTaskTC(todoID, task.id, { title: upValue }))
+      dispatch(updateTaskSC(todoID, task.id, { title: upValue }, taskAll))
     },
     [todoID, task]
   )

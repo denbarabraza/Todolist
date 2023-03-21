@@ -10,7 +10,7 @@ import { RootDispatch, RootStoreType, useAppSelector } from '../../../store/stor
 import { Task } from '../../tasks/Task'
 import {
   changeFilterValueAC,
-  createTasksTC,
+  createTasksSC,
   FilterValueType,
   TaskCommonType,
 } from '../../tasks/taskReducer'
@@ -41,7 +41,7 @@ export const OpenTodoTemplate: FC<OpenTodoTemplateType> = memo(({ close, todoID 
   const addNewTask = useCallback(
     (value: string) => {
       if (todoID) {
-        dispatch(createTasksTC(todoID, value))
+        dispatch(createTasksSC(todoID, value))
       }
     },
     [todoID]
@@ -74,9 +74,6 @@ export const OpenTodoTemplate: FC<OpenTodoTemplateType> = memo(({ close, todoID 
 
   useEffect(() => {
     if (!todoID) return
-    // if (isOpen) {
-    //   dispatch(setTasksTC(todoID));
-    // }
   }, [task])
 
   return (
