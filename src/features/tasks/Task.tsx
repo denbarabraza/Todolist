@@ -8,7 +8,8 @@ import { TaskStatuses, TaskType, TodoType } from '../../api/api'
 import { SuperEditbleSpan } from '../../common/components/SuperEditbleSpan'
 import { RootDispatch, RootStoreType } from '../../store/store'
 
-import { removeTasksSC, TaskCommonType, updateTaskSC } from './taskReducer'
+import { TaskCommonType } from './taskReducer'
+import { removeTasksSC, updateTaskSC } from './taskSagas'
 
 import s from 'common/styles/TaskItem.module.css'
 

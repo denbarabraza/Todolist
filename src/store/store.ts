@@ -1,18 +1,12 @@
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 import { AnyAction, applyMiddleware, combineReducers, legacy_createStore } from 'redux'
 import createSagaMiddleware from 'redux-saga'
-import { takeEvery } from 'redux-saga/effects'
 import thunk, { ThunkDispatch } from 'redux-thunk'
 
 import { appReducer } from '../app/appReducer'
 import { authReducer } from '../features/auth/authReducer'
-import {
-  createTasksSaga,
-  removeTasksSaga,
-  setTaskWorkerSaga,
-  taskReducer,
-  updateTaskSaga,
-} from '../features/tasks/taskReducer'
+import { taskReducer } from '../features/tasks/taskReducer'
+import { taskWatcher } from '../features/tasks/taskSagas'
 import { todoReducer } from '../features/todos/todoReducer'
 
 const rootReducer = combineReducers({
@@ -34,8 +28,5 @@ export const store = legacy_createStore(rootReducer, applyMiddleware(thunk, saga
 sagaMiddleware.run(rootWatcher)
 
 function* rootWatcher() {
-  yield takeEvery('TASK/SET_TASK', setTaskWorkerSaga)
-  yield takeEvery('TASK/CREATE_TASK', createTasksSaga)
-  yield takeEvery('TASK/REMOVE_TASK', removeTasksSaga)
-  yield takeEvery('TASK/UPDATE_TASK', updateTaskSaga)
+  yield taskWatcher()
 }

@@ -8,12 +8,8 @@ import { InputItemForm } from '../../../common/components/InputItemForm'
 import { SuperEditbleSpan } from '../../../common/components/SuperEditbleSpan'
 import { RootDispatch, RootStoreType, useAppSelector } from '../../../store/store'
 import { Task } from '../../tasks/Task'
-import {
-  changeFilterValueAC,
-  createTasksSC,
-  FilterValueType,
-  TaskCommonType,
-} from '../../tasks/taskReducer'
+import { changeFilterValueAC, FilterValueType, TaskCommonType } from '../../tasks/taskReducer'
+import { createTasksSC } from '../../tasks/taskSagas'
 import { updateTodoTC } from '../../todos/todoReducer'
 
 import s from 'common/styles/OpenTodoTemplate.module.css'
