@@ -1,25 +1,27 @@
 .imgLogOut {
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
-  margin-left: 10px;
+    cursor: pointer;
+
+    width: 20px;
+    height: 20px;
+    margin-left: 10px;
 }
 
 .imgLogOut:hover {
-  transform: translateY(-1px);
+    transform: translateY(-1px);
 }
 
 .toolbarBlock {
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+
+    width: 100%;
 }
 
 .loginBlock {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
 }
