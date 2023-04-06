@@ -23,9 +23,7 @@ const AppBarItem: FC<AppBarItemPropsType> = ({ isLoggedIn, loginName }) => {
     dispatch(logOutTC())
   }
 
-  useEffect(() => {
-    console.log(loginName)
-  }, [isLoggedIn, loginName])
+  useEffect(() => {}, [isLoggedIn, loginName])
 
   return (
     <div>
